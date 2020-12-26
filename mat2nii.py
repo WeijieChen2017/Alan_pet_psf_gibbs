@@ -29,7 +29,7 @@ def process_data(data):
     return zoom_data
 
 nii_list = glob.glob("./inv_F3/*.nii")
-niii_list.sort()
+nii_list.sort()
 for nii_name in nii_list:
     print("-----------------------------------------------")
     nii_idx = os.path.basename(nii_name)[:-4]
