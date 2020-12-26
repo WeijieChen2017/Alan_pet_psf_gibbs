@@ -16,8 +16,8 @@ import NiftiGenerator
 
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
-x_data_folder = 'test_recon'
-y_data_folder = 'test_f3'
+x_data_folder = 'inv_GIBBS'
+y_data_folder = 'inv_F3'
 weightfile_name = 'weights_PET_PSF_GIBBS.h5'
 model_name = 'model_PET_PSF_GIBBS.json'
 jpgprogressfile_name = 'PET_PSF_GIBBS'
