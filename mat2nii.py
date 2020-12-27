@@ -25,14 +25,14 @@ def process_data(data):
     return data
 
 name_dataset = "HURLEY"
-nii_list = glob.glob("./"+name_dataset+"/*.nii")
+nii_list = glob.glob("./"+name_dataset+"_F3/*.nii")
 nii_list.sort()
-if not os.path.exists("./"+name_dataset+"/GIBBS/"):
-    os.makedirs("./"+name_dataset+"/GIBBS/")
+if not os.path.exists("./"+name_dataset+"_GIBBS/"):
+    os.makedirs("./"+name_dataset+"_GIBBS/")
 for nii_name in nii_list:
     print("-----------------------------------------------")
     nii_idx = os.path.basename(nii_name)[:-4]
-    mat_list = glob.glob("./"+name_dataset+"/"+nii_idx+"*.mat")
+    mat_list = glob.glob("./"+name_dataset+"_DR/"+nii_idx+"*.mat")
     mat_name = mat_list[0]
     print(nii_name)
     print(mat_name)
@@ -54,6 +54,6 @@ for nii_name in nii_list:
 
     save_data = process_data(mat_data)
     save_file = nib.Nifti1Image(save_data, affine=tmpl_affine, header=tmpl_header)
-    save_name = "./"+name_dataset+"/GIBBS/"+nii_idx+".nii"
+    save_name = "./"+name_dataset+"_GIBBS/"+nii_idx+".nii"
     nib.save(save_file, save_name)
     print(save_name)
