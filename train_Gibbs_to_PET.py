@@ -17,8 +17,8 @@ import NiftiGenerator
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'inv_GIBBS'
-y_data_folder = 'inv_F3'
-tag = "_deep4_filter32"
+y_data_folder = 'inv_RSZP'
+tag = "_deep3_filter32_xGIBBS_yRSZP"
 weightfile_name = 'weights_PET_PSF_GIBBS'+tag+'.h5'
 model_name = 'model_PET_PSF_GIBBS'+tag+'.json'
 jpgprogressfile_name = 'PET_PSF_GIBBS'+tag
@@ -37,7 +37,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows,img_cols,1),start_ch=32,depth=4)
+    model = Unet.UNetContinuous((img_rows,img_cols,1),start_ch=32,depth=3)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
