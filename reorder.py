@@ -21,7 +21,9 @@ for Y_name in Y_list:
     idx_str = "{0:0>3}".format(new_order)
     cmd_X = "mv "+X_name+" h"+idx_str+".nii"
     cmd_Y = "mv "+Y_name+" h"+idx_str+".nii"
-    print(cmd_X)
-    print(cmd_Y)
+    print("cmd X:", cmd_X)
+    print("cmd_Y:", cmd_Y)
+    os.system(cmd_X)
+    os.system(cmd_Y)
 
     new_order += 1
