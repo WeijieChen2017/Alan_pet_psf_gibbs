@@ -24,3 +24,4 @@ for Y_name in Y_list:
     print(cmd_X)
     print(cmd_Y)
 
+    new_order += 1
