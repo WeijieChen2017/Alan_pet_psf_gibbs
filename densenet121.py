@@ -158,7 +158,7 @@ def DenseNet(blocks=[],
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
-        # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        x = layers.Conv2DTranspose(64, 3, strides=2, activation='relu', padding='same')(x)
         x = layers.Conv2DTranspose(64, 3, strides=2, activation='relu', padding='same')(x)
         x = layers.Conv2D(out_ch, 1, activation='linear', name='output')(x)
 
