@@ -19,6 +19,8 @@ from . import imagenet_utils
 from .imagenet_utils import decode_predictions
 from .imagenet_utils import _obtain_input_shape
 
+from tensorflow.keras import backend, layers, models, keras_utils
+
 
 BASE_WEIGTHS_PATH = (
     'https://github.com/keras-team/keras-applications/'
