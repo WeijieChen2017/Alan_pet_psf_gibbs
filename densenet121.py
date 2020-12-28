@@ -44,7 +44,7 @@ def DenseNet(img_shape, out_ch=1, nb_dense_block=4, growth_rate=32, nb_filter=64
 
     # Initial convolution
     x = ZeroPadding2D((3, 3), name='conv1_zeropadding')(img_input)
-    x = Convolution2D(nb_filter, 7, 7, subsample=(2, 2), name='conv1', bias=False)(x)
+    x = Convolution2D(nb_filter, 7, 7, strides=(2, 2), name='conv1', bias=False)(x)
     x = BatchNormalization(epsilon=eps, axis=concat_axis, name='conv1_bn')(x)
     x = Scale(axis=concat_axis, name='conv1_scale')(x)
     x = Activation('relu', name='relu1')(x)
