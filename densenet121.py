@@ -130,33 +130,7 @@ def DenseNet(blocks,
         ValueError: in case of invalid argument for `weights`,
             or invalid input shape.
     """
-    if not (weights in {'imagenet', None} or os.path.exists(weights)):
-        raise ValueError('The `weights` argument should be either '
-                         '`None` (random initialization), `imagenet` '
-                         '(pre-training on ImageNet), '
-                         'or the path to the weights file to be loaded.')
-
-    if weights == 'imagenet' and include_top and classes != 1000:
-        raise ValueError('If using `weights` as `"imagenet"` with `include_top`'
-                         ' as true, `classes` should be 1000')
-
-    # # Determine proper input shape
-    # input_shape = _obtain_input_shape(input_shape,
-    #                                   default_size=224,
-    #                                   min_size=32,
-    #                                   data_format=backend.image_data_format(),
-    #                                   require_flatten=include_top,
-    #                                   weights=weights)
-
-    if input_tensor is None:
-        img_input = layers.Input(shape=input_shape)
-    else:
-        if not backend.is_keras_tensor(input_tensor):
-            img_input = layers.Input(tensor=input_tensor, shape=input_shape)
-        else:
-            img_input = input_tensor
-
-    bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
+    img_input = layers.Input(shape=input_shape)
 
     x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)))(img_input)
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name='conv1/conv')(x)
