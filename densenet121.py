@@ -301,9 +301,11 @@ def DenseNet121(input_shape=None,
                     img_shape=image_shape, 
                     out_ch=1, 
                     continus=continus,
-                    include_top, weights,
-                    input_tensor, input_shape,
-                    pooling, classes,
+                    include_top=include_top, 
+                    weights=weights,
+                    input_tensor=input_tensor,
+                    pooling=pooling, 
+                    classes=classes,
                     **kwargs)
 
 
