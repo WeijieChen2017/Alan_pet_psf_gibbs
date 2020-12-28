@@ -68,7 +68,7 @@ def DenseNet(img_shape, out_ch=1, nb_dense_block=4, growth_rate=32, nb_filter=64
     x = Activation('relu', name='relu'+str(final_stage)+'_blk')(x)
     x = GlobalAveragePooling2D(name='pool'+str(final_stage))(x)
 
-    x = Dense(classes, name='fc6')(x)
+    # x = Dense(classes, name='fc6')(x)
     # x = Activation('softmax', name='prob')(x)
     x = Convolution2D(out_ch, 1, activation='linear', name="output")(x)
 
