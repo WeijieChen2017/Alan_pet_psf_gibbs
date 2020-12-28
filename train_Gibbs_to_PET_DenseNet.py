@@ -14,6 +14,10 @@ from tensorflow.keras.optimizers import Adam
 import Unet
 import NiftiGenerator
 
+import densenet121
+import densenet161
+import densenet169
+
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'HURLEY_GIBBS'
@@ -37,7 +41,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows,img_cols,1),start_ch=64,depth=4)
+    model = densenet121.DenseNet((img_rows,img_cols,1),start_ch=64,depth=4)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 

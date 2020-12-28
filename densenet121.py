@@ -8,7 +8,7 @@ import keras.backend as K
 
 from custom_layers import Scale
 
-def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, dropout_rate=0.0, weight_decay=1e-4, classes=1000, weights_path=None):
+def DenseNet(img_shape, out_ch=1, nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, dropout_rate=0.0, weight_decay=1e-4, classes=1000, weights_path=None):
     '''Instantiate the DenseNet 121 architecture,
         # Arguments
             nb_dense_block: number of dense blocks to add to end
@@ -29,16 +29,18 @@ def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, drop
 
     # Handle Dimension Ordering for different backends
     global concat_axis
-    if K.image_dim_ordering() == 'tf':
-      concat_axis = 3
-      img_input = Input(shape=(224, 224, 3), name='data')
-    else:
-      concat_axis = 1
-      img_input = Input(shape=(3, 224, 224), name='data')
+    # if K.image_dim_ordering() == 'tf':
+    #   concat_axis = 3
+    #   img_input = Input(shape=(224, 224, 3), name='data')
+    # else:
+    #   concat_axis = 1
+    #   img_input = Input(shape=(3, 224, 224), name='data')
 
     # From architecture for ImageNet (Table 1 in the paper)
     nb_filter = 64
     nb_layers = [6,12,24,16] # For DenseNet-121
+
+    img_input = Input(shape=img_shape)
 
     # Initial convolution
     x = ZeroPadding2D((3, 3), name='conv1_zeropadding')(img_input)
@@ -70,7 +72,7 @@ def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, drop
     # x = Activation('softmax', name='prob')(x)
     x = Convolution2D(out_ch, 1, activation='linear', name="output")(x)
 
-    model = Model(img_input, x, name='densenet')
+    model = Model(input=img_input, output=x, name='densenet')
 
     if weights_path is not None:
       model.load_weights(weights_path)
