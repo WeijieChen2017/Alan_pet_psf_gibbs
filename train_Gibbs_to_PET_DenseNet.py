@@ -15,8 +15,6 @@ import Unet
 import NiftiGenerator
 
 import densenet121
-import densenet161
-import densenet169
 
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
@@ -41,7 +39,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = densenet121.DenseNet(img_shape=(img_rows,img_cols,1), out_ch=1, nb_filter=64, nb_dense_block=4)
+    model = densenet121.DenseNet(blocks=6, img_shape=(img_rows,img_cols,1), out_ch=1, continus=True)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
