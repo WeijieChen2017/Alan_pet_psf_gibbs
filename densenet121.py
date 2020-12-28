@@ -47,7 +47,7 @@ def transition_block(x, reduction, name):
     x = layers.Conv2D(int(backend.int_shape(x)[bn_axis] * reduction), 1,
                       use_bias=False,
                       name=name + '_conv')(x)
-    x = layers.AveragePooling2D(2, strides=2, name=name + '_pool')(x)
+    # x = layers.AveragePooling2D(2, strides=2, name=name + '_pool')(x)
     return x
 
 
@@ -79,7 +79,7 @@ def conv_block(x, growth_rate, name):
     return x
 
 
-def DenseNet(blocks,
+def DenseNet(blocks=[],
              input_shape=None,
              out_ch=1,
              continus=True,
@@ -155,7 +155,13 @@ def DenseNet(blocks,
     x = layers.Activation('relu', name='relu')(x)
 
     if continus:
+        # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         x = layers.Conv2D(out_ch, 1, activation='linear', name='output')(x)
+
     else:
         if include_top:
             x = layers.GlobalAveragePooling2D(name='avg_pool')(x)
