@@ -14,35 +14,7 @@ from __future__ import print_function
 
 import os
 
-from tensorflow.keras import backend, layers, models, keras_utils
-
-
-BASE_WEIGTHS_PATH = (
-    'https://github.com/keras-team/keras-applications/'
-    'releases/download/densenet/')
-DENSENET121_WEIGHT_PATH = (
-    BASE_WEIGTHS_PATH +
-    'densenet121_weights_tf_dim_ordering_tf_kernels.h5')
-DENSENET121_WEIGHT_PATH_NO_TOP = (
-    BASE_WEIGTHS_PATH +
-    'densenet121_weights_tf_dim_ordering_tf_kernels_notop.h5')
-DENSENET169_WEIGHT_PATH = (
-    BASE_WEIGTHS_PATH +
-    'densenet169_weights_tf_dim_ordering_tf_kernels.h5')
-DENSENET169_WEIGHT_PATH_NO_TOP = (
-    BASE_WEIGTHS_PATH +
-    'densenet169_weights_tf_dim_ordering_tf_kernels_notop.h5')
-DENSENET201_WEIGHT_PATH = (
-    BASE_WEIGTHS_PATH +
-    'densenet201_weights_tf_dim_ordering_tf_kernels.h5')
-DENSENET201_WEIGHT_PATH_NO_TOP = (
-    BASE_WEIGTHS_PATH +
-    'densenet201_weights_tf_dim_ordering_tf_kernels_notop.h5')
-
-backend = None
-layers = None
-models = None
-keras_utils = None
+from tensorflow.keras import backend, layers, models
 
 
 def dense_block(x, blocks, name):
@@ -158,9 +130,6 @@ def DenseNet(blocks,
         ValueError: in case of invalid argument for `weights`,
             or invalid input shape.
     """
-    global backend, layers, models, keras_utils
-    backend, layers, models, keras_utils = get_submodules_from_kwargs(kwargs)
-
     if not (weights in {'imagenet', None} or os.path.exists(weights)):
         raise ValueError('The `weights` argument should be either '
                          '`None` (random initialization), `imagenet` '
@@ -223,10 +192,7 @@ def DenseNet(blocks,
 
     # Ensure that the model takes into account
     # any potential predecessors of `input_tensor`.
-    if input_tensor is not None:
-        inputs = keras_utils.get_source_inputs(input_tensor)
-    else:
-        inputs = img_input
+    inputs = img_input
 
     # Create model.
     if blocks == [6, 12, 24, 16]:
@@ -237,50 +203,6 @@ def DenseNet(blocks,
         model = models.Model(inputs, x, name='densenet201')
     else:
         model = models.Model(inputs, x, name='densenet')
-
-    # Load weights.
-    if weights == 'imagenet':
-        if include_top:
-            if blocks == [6, 12, 24, 16]:
-                weights_path = keras_utils.get_file(
-                    'densenet121_weights_tf_dim_ordering_tf_kernels.h5',
-                    DENSENET121_WEIGHT_PATH,
-                    cache_subdir='models',
-                    file_hash='9d60b8095a5708f2dcce2bca79d332c7')
-            elif blocks == [6, 12, 32, 32]:
-                weights_path = keras_utils.get_file(
-                    'densenet169_weights_tf_dim_ordering_tf_kernels.h5',
-                    DENSENET169_WEIGHT_PATH,
-                    cache_subdir='models',
-                    file_hash='d699b8f76981ab1b30698df4c175e90b')
-            elif blocks == [6, 12, 48, 32]:
-                weights_path = keras_utils.get_file(
-                    'densenet201_weights_tf_dim_ordering_tf_kernels.h5',
-                    DENSENET201_WEIGHT_PATH,
-                    cache_subdir='models',
-                    file_hash='1ceb130c1ea1b78c3bf6114dbdfd8807')
-        else:
-            if blocks == [6, 12, 24, 16]:
-                weights_path = keras_utils.get_file(
-                    'densenet121_weights_tf_dim_ordering_tf_kernels_notop.h5',
-                    DENSENET121_WEIGHT_PATH_NO_TOP,
-                    cache_subdir='models',
-                    file_hash='30ee3e1110167f948a6b9946edeeb738')
-            elif blocks == [6, 12, 32, 32]:
-                weights_path = keras_utils.get_file(
-                    'densenet169_weights_tf_dim_ordering_tf_kernels_notop.h5',
-                    DENSENET169_WEIGHT_PATH_NO_TOP,
-                    cache_subdir='models',
-                    file_hash='b8c4d4c20dd625c148057b9ff1c1176b')
-            elif blocks == [6, 12, 48, 32]:
-                weights_path = keras_utils.get_file(
-                    'densenet201_weights_tf_dim_ordering_tf_kernels_notop.h5',
-                    DENSENET201_WEIGHT_PATH_NO_TOP,
-                    cache_subdir='models',
-                    file_hash='c13680b51ded0fb44dff2d8f86ac8bb1')
-        model.load_weights(weights_path)
-    elif weights is not None:
-        model.load_weights(weights)
 
     return model
 
