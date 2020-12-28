@@ -159,7 +159,7 @@ def DenseNet(blocks=[],
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         # x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
-        x = Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
+        x = layers.Conv2DTranspose(64, 3, strides=2, activation=acti, padding='same')(x)
         x = layers.Conv2D(out_ch, 1, activation='linear', name='output')(x)
 
     else:
@@ -197,7 +197,6 @@ def DenseNet121(input_shape=None,
                 pooling=None,
                 classes=1000,
                 **kwargs):
-    print(input_shape, output_1, continus, include_top, pooling, classes)
     return DenseNet([6, 12, 24, 16], 
                     input_shape=input_shape, 
                     out_ch=1, 
