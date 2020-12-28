@@ -128,7 +128,7 @@ def DenseNet(blocks,
         ValueError: in case of invalid argument for `weights`,
             or invalid input shape.
     """
-    img_input = layers.Input(shape=input_shape)
+    img_input = layers.Input(shape=(256, 256, 1))
 
     x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)))(img_input)
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name='conv1/conv')(x)
