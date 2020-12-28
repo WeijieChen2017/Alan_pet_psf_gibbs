@@ -130,6 +130,7 @@ def DenseNet(blocks,
     """
 
     bn_axis = 3
+    blocks = [6, 12, 24, 16]
 
     img_input = layers.Input(shape=(256, 256, 1))
 
