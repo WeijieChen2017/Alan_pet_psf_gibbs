@@ -20,7 +20,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'HURLEY_GIBBS'
 y_data_folder = 'HURLEY_F3'
-tag = "_HURLEY_deep4_filter64_xGIBBS_yF3"
+tag = "_HURLEY_xGIBBS_yF3_DENSENET_6_12_24_16"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
@@ -39,7 +39,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = densenet121.DenseNet(blocks=6, img_shape=(img_rows,img_cols,1), out_ch=1, continus=True)
+    model = densenet121.DenseNet121(img_shape=(img_rows,img_cols,1), out_ch=1, continus=True)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
