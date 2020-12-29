@@ -19,7 +19,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
 # train_volumes = 60 # number of volumes used in training
-data_folder = 'F1'
+data_folder = 'F3'
 model_folder = 'Achives_BraTS'
 weights_folder = 'Achives_BraTS'
 
