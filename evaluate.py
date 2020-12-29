@@ -66,7 +66,7 @@ def eval():
             # print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
             predY_data = np.transpose(outputY, (1,2,0,3)) * testX_max
-            diffY_data = np.subtract(testX_data, predY)
+            diffY_data = np.subtract(testX_data, predY_data)
 
             predY_folder = "./test/predY_"+data_folder+"_"+model_folder+"_"+model_name+"/"
             diffY_folder = "./test/diffY_"+data_folder+"_"+model_folder+"_"+model_name+"/"
