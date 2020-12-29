@@ -1,6 +1,7 @@
 import os
 import glob
 import nibabel as nib
+from nibabel import processing
 
 nii_list = glob.glob("./*.nii")
 nii_list.sort()
