@@ -1,4 +1,5 @@
 import os
+import glob
 import nibabel as nib
 
 nii_list = glob.glob("./*.nii")
