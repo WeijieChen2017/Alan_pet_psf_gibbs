@@ -19,7 +19,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
 # train_volumes = 60 # number of volumes used in training
-data_folder = 'F3'
+data_folder = 'F3_10'
 model_folder = 'Achives_BraTS'
 weights_folder = 'Achives_BraTS'
 
@@ -95,8 +95,8 @@ def eval():
             predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
             diffY_data = np.subtract(testX_data, predY_data)
 
-            predY_folder = "./test/predY_"+data_folder+"_"+model_folder+"_"+model_name+"/"
-            diffY_folder = "./test/diffY_"+data_folder+"_"+model_folder+"_"+model_name+"/"
+            predY_folder = "./test/"+model_folder+"predY_"+data_folder+"_"+model_name[:-5]+"/"
+            diffY_folder = "./test/"+model_folder+"diffY_"+data_folder+"_"+model_name[:-5]+"/"
             if not os.path.exists(predY_folder):
                 os.makedirs(predY_folder)
             if not os.path.exists(diffY_folder):
