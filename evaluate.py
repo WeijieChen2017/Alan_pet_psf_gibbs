@@ -20,8 +20,8 @@ img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
 # train_volumes = 60 # number of volumes used in training
 data_folder = 'F1'
-model_folder = 'Archives_BraTS'
-weights_folder = 'Archives_BraTS'
+model_folder = 'Achives_BraTS'
+weights_folder = 'Achives_BraTS'
 
 eval_path = "./eval/"
 if not os.path.exists(eval_path):
