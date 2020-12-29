@@ -65,7 +65,7 @@ def eval():
             inputX = du.get25DImage(inputX, 1)
             # print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
-            predY_data = np.transpose(outputY, (1,2,0,3)) * testX_max
+            predY_data = mp.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
             diffY_data = np.subtract(testX_data, predY_data)
 
             predY_folder = "./test/predY_"+data_folder+"_"+model_folder+"_"+model_name+"/"
