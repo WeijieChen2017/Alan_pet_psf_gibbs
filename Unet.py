@@ -32,7 +32,7 @@ def conv_block(m, dim, acti, bn, res, do=0):
     n = BatchNormalization()(n) if bn else n
     return Concatenate()([m, n]) if res else n
 
-def level_block(m, dim, depth, inc, acti, do, bn, mp, up, res):
+def level_block(m, dim, depth, inc, acti, do, bn,  mp, up, res):
     if depth > 0:
         n = conv_block(m, dim, acti, bn, res)
         m = MaxPooling2D()(n) if mp else Conv2D(dim, 3, strides=2, padding='same')(n)

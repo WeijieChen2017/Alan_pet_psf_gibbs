@@ -27,6 +27,33 @@ eval_path = "./eval/"
 if not os.path.exists(eval_path):
     os.makedirs(eval_path)
 
+def create_index(dataA, n_slice, zeroPadding=False):
+    h, w, z = dataA.shape
+    index = np.zeros((z,n_slice))
+    
+    for idx_z in range(z):
+        for idx_c in range(n_slice):
+            index[idx_z, idx_c] = idx_z-(n_slice-idx_c+1)+n_slice//2+2
+    if zeroPadding:
+        index[index<0]=z
+        index[index>z-1]=z
+    else:
+        index[index<0]=0
+        index[index>z-1]=z-1
+    return index
+
+def createInput(data, n_slice=1):
+    h, w, z = data.shape
+    data_input = np.zeros((z, h, w, n_slice))
+    index = create_index(data, n_slice, zeroPadding=False)
+        
+    for idx_z in range(z):
+        for idx_c in range(n_slice):
+            data_input[idx_z, :, :, idx_c] = data[:, :, int(index[idx_z, idx_c])]
+            
+    return data_input
+
+
 def eval():
     print("./"+model_folder+"/*.json")
     model_list = glob.glob("./"+model_folder+"/*.json")
@@ -62,10 +89,10 @@ def eval():
             testX_norm = testX_data / testX_max
             
             inputX = np.transpose(testX_norm, (2,0,1))
-            inputX = du.get25DImage(inputX, 1)
+            inputX = createInput(inputX, n_slice=1)
             # print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
-            predY_data = mp.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
+            predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
             diffY_data = np.subtract(testX_data, predY_data)
 
             predY_folder = "./test/predY_"+data_folder+"_"+model_folder+"_"+model_name+"/"

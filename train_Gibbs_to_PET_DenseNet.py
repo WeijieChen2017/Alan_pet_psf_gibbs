@@ -18,9 +18,9 @@ import densenet121
 
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
-x_data_folder = 'HURLEY_GIBBS'
-y_data_folder = 'HURLEY_F3'
-tag = "_HURLEY_xGIBBS_yF3_DENSENET_6_12_24_16"
+x_data_folder = 'BRATS_GIBBS'
+y_data_folder = 'BRATS_F3'
+tag = "_BRATS_xGIBBS_yF3_DENSENET_6_12_24_16"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
