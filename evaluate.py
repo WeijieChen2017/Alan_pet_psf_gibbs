@@ -34,7 +34,7 @@ def eval():
     for model_path in model_list:
         model_name = os.path.basename(model_path)
 
-        weights_name = "weights_"+model_name[5:-5]+".h5"
+        weights_name = "weights"+model_name[5:-5]+".h5"
         weights_path = "./"+weights_folder+"/"+weights_name
 
         print('-'*50)
