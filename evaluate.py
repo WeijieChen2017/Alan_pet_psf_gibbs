@@ -28,7 +28,7 @@ if not os.path.exists(eval_path):
     os.makedirs(eval_path)
 
 def eval():
-
+    print("./"+model_folder+"/*.json")
     model_list = glob.glob("./"+model_folder+"/*.json")
     model_list.sort()
     for model_path in model_list:
