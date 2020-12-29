@@ -62,7 +62,7 @@ def eval():
             testX_norm = testX_data / testX_max
             
             inputX = np.transpose(testX_norm, (2,0,1))
-            inputX = du.get25DImage(inputX, 3)
+            inputX = du.get25DImage(inputX, 1)
             print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
             predY_data = np.transpose(outputY, (1,2,0,3)) * testX_max
