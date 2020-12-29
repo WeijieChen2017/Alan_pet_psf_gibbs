@@ -90,7 +90,7 @@ def eval():
             
             inputX = np.transpose(testX_norm, (2,0,1))
             inputX = createInput(inputX, n_slice=1)
-            # print("inputX shape: ", inputX.shape)
+            print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
             predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
             diffY_data = np.subtract(testX_data, predY_data)
