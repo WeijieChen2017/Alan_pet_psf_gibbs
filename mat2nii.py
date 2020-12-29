@@ -24,7 +24,7 @@ def process_data(data):
 
     return data
 
-name_dataset = "HURLEY"
+name_dataset = "RSZP"
 nii_list = glob.glob("./"+name_dataset+"_F3/*.nii")
 nii_list.sort()
 if not os.path.exists("./"+name_dataset+"_GIBBS/"):
@@ -32,7 +32,7 @@ if not os.path.exists("./"+name_dataset+"_GIBBS/"):
 for nii_name in nii_list:
     print("-----------------------------------------------")
     nii_idx = os.path.basename(nii_name)[:-4]
-    mat_list = glob.glob("./"+name_dataset+"_DR/"+nii_idx+"*.mat")
+    mat_list = glob.glob("./"+name_dataset+"_DR_mat/"+nii_idx+"*.mat")
     mat_name = mat_list[0]
     print(nii_name)
     print(mat_name)
