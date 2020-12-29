@@ -37,7 +37,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows,img_cols,1),start_ch=64,depth=4)
+    model = Unet.UNetContinuous((img_rows, img_cols, 1),start_ch=64,depth=4)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
