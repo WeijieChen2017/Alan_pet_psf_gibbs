@@ -18,7 +18,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'BRATS_GIBBSF3'
 y_data_folder = 'BRATS_F3F3'
-tag = "_BRATS_F3_d3f128_xGF3_yF3F3"
+tag = "_BRATS_F3_d3f64_xGF3_yF3F3"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
@@ -37,7 +37,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows, img_cols, 1),start_ch=128,depth=3)
+    model = Unet.UNetContinuous((img_rows, img_cols, 1),start_ch=64,depth=3)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
