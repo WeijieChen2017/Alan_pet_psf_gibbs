@@ -93,6 +93,9 @@ def eval():
             print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
             predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
+            testX_sum = np.sum(testX_data)
+            predY_sum = np.sum(predY_data)
+            predY_data = predY_data / predY_sum * testX_sum
             diffY_data = np.subtract(testX_data, predY_data)
 
             predY_folder = "./test/"+model_folder+"/predY_"+data_folder+"_"+model_name[:-5]+"/"
