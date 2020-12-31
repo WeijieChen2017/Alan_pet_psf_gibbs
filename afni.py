@@ -5,7 +5,7 @@ os.system("mkdir RSZP")
 for idx in range(51):
 	idx_str = "{0:0>3}".format(idx+1)
 	print(idx_str)
-	cmd_1 = "3dresample -dxyz 1.172 1.172 2.78 -prefix p"+idx_str+" -inset DDMoCo_Head_"+idx_str+"_1_PET_1.nii.gz"
+	cmd_1 = "3dresample -dxyz 1.172 1.172 2.78 -prefix p"+idx_str+" -inset DDMoCo_Head_"+idx_str+"_1_PET_1.nii.gz -rmode Cu"
 	# cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
 	cmd_3 = "3dAFNItoNIFTI -prefix p"+idx_str+" p"+idx_str+"+orig"
 	# cmd_4 = "rm -f zeropad+orig.BRIK"
