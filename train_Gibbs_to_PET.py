@@ -18,12 +18,12 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'BRATS_GIBBSF3'
 y_data_folder = 'BRATS_F3F3'
-tag = "_BRATS_F3_d3f64_xGF3_yF3F3"
+tag = "_50L1_BRATS_F3_d3f64_xGF3_yF3F3"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
 batch_size = 8 # should be smallish. 1-10
-num_epochs = 25 # should train for at least 100-200 in total
+num_epochs = 50 # should train for at least 100-200 in total
 steps_per_epoch = 20*89 # should be enough to be equal to one whole pass through the dataset
 initial_epoch = 0 # for resuming training
 load_weights = False # load trained weights for resuming training
@@ -38,7 +38,7 @@ def train():
     print('Creating and compiling model...')
     print('-'*50)
     model = Unet.UNetContinuous((img_rows, img_cols, 1),start_ch=64,depth=3)
-    model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
+    model.compile(optimizer=Adam(lr=1e-4), loss=mean_absolute_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
     # Save the model architecture
