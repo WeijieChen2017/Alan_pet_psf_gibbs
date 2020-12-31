@@ -19,13 +19,13 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
 # train_volumes = 60 # number of volumes used in training
-data_folder = 'V10_GIBBS'
-model_folder = 'Achives_DenseNet'
-weights_folder = 'Achives_DenseNet'
+data_folder = 'PET_RSZP_10'
+model_folder = 'Achives_F3F3'
+weights_folder = 'Achievs_F3F3'
 
-eval_path = "./eval/"
-if not os.path.exists(eval_path):
-    os.makedirs(eval_path)
+# eval_path = "./eval/"
+# if not os.path.exists(eval_path):
+#     os.makedirs(eval_path)
 
 def create_index(dataA, n_slice, zeroPadding=False):
     h, w, z = dataA.shape
