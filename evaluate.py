@@ -19,7 +19,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
 # train_volumes = 60 # number of volumes used in training
-data_folder = 'XBGF'
+data_folder = 'PET_RSZP_10'
 model_folder = 'Achives_F3F3'
 weights_folder = 'Achives_F3F3'
 
