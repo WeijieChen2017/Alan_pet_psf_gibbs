@@ -21,8 +21,8 @@ img_slcs = 89 # should be fixed for all inputs
 out_channel = 3
 # train_volumes = 60 # number of volumes used in training
 data_folder = 'PET_RSZP_10'
-model_folder = 'Achives_e50S1'
-weights_folder = 'Achives_e50S1'
+model_folder = 'Achives_e50S3'
+weights_folder = 'Achives_e50S3'
 
 # eval_path = "./eval/"
 # if not os.path.exists(eval_path):
