@@ -401,13 +401,13 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                 # determine sampling range
                 if Xslice_samples==1:
                     zX = np.random.randint( 0, XimgShape[2]-1 )
-                elif slice_samples==3:
+                elif Xslice_samples==3:
                     zX = np.random.randint( 1, XimgShape[2]-2 )
-                elif slice_samples==5:
+                elif Xslice_samples==5:
                     zX = np.random.randint( 2, XimgShape[2]-3 )
-                elif slice_samples==7:
+                elif Xslice_samples==7:
                     zX = np.random.randint( 3, XimgShape[2]-4 )
-                elif slice_samples==9:
+                elif Xslice_samples==9:
                     zX = np.random.randint( 4, XimgShape[2]-5 )
                 else:
                     module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
@@ -439,13 +439,13 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                 # determine sampling range
                 if Yslice_samples==1:
                     zY = np.random.randint( 0, XimgShape[2]-1 )
-                elif slice_samples==3:
+                elif Yslice_samples==3:
                     zY = np.random.randint( 1, XimgShape[2]-2 )
-                elif slice_samples==5:
+                elif Yslice_samples==5:
                     zY = np.random.randint( 2, XimgShape[2]-3 )
-                elif slice_samples==7:
+                elif Yslice_samples==7:
                     zY = np.random.randint( 3, XimgShape[2]-4 )
-                elif slice_samples==9:
+                elif Yslice_samples==9:
                     zY = np.random.randint( 4, XimgShape[2]-5 )
                 else:
                     module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
