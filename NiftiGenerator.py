@@ -399,7 +399,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                     module_logger.warning('input data ({} and {}) is not the same size. this may lead to unexpected results or errors!'.format(currImgFileX,currImgFileY))
 
                 # determine sampling range
-                if slice_samples==1:
+                if Xslice_samples==1:
                     zX = np.random.randint( 0, XimgShape[2]-1 )
                 elif slice_samples==3:
                     zX = np.random.randint( 1, XimgShape[2]-2 )
@@ -437,7 +437,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
 
 
                 # determine sampling range
-                if slice_samples==1:
+                if Yslice_samples==1:
                     zY = np.random.randint( 0, XimgShape[2]-1 )
                 elif slice_samples==3:
                     zY = np.random.randint( 1, XimgShape[2]-2 )
