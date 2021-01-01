@@ -18,6 +18,7 @@ import dataUtilities as du
 img_rows = 256 # image is resampled to this size 
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
+out_channel = 3
 # train_volumes = 60 # number of volumes used in training
 data_folder = 'PET_RSZP_10'
 model_folder = 'Achives_e50S1'
@@ -89,10 +90,10 @@ def eval():
             testX_norm = testX_data / testX_max
             
             # inputX = np.transpose(testX_norm, (2,0,1))
-            inputX = createInput(testX_norm, n_slice=1)
+            inputX = createInput(testX_norm, n_slice=out_channel)
             print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
-            predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3)) * testX_max)
+            predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3))[:, :, out_channel // 2]) * testX_max
             testX_sum = np.sum(testX_data)
             predY_sum = np.sum(predY_data)
             predY_data = predY_data / predY_sum * testX_sum
