@@ -18,7 +18,7 @@ img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
 x_data_folder = 'BRATS_GIBBSF3'
 y_data_folder = 'BRATS_F3F3'
-tag = "_50L2_BRATS_F3_d3f64_xGF3_yF3F3"
+tag = "_50L2S3_BRATS_F3_d3f64_xGF3_yF3F3"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
@@ -37,7 +37,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows, img_cols, 1),start_ch=64,depth=3)
+    model = Unet.UNetContinuous((img_rows, img_cols, 3),start_ch=64,depth=3)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
@@ -67,7 +67,7 @@ def train():
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
     niftiGen.initialize( y_data_folder, x_data_folder, niftiGen_augment_opts, niftiGen_norm_opts )
-    generator = niftiGen.generate(batch_size=batch_size)
+    generator = niftiGen.generate(slice_samples=1, batch_size=batch_size)
     # get one sample for progress images
     test_x = np.load('test_x.npy')
     test_y = np.load('test_y.npy')
@@ -86,7 +86,7 @@ def train():
     print('-'*50)
     fig = plt.figure(figsize=(15,5))
     fig.show(False)
-    model.fit( generator, steps_per_epoch=steps_per_epoch, epochs=num_epochs, initial_epoch=initial_epoch, callbacks=[history,model_checkpoint,display_progress] )
+    model.fit( generator, steps_per_epoch=steps_per_epoch, epochs=num_epochs, initial_epoch=initial_epoch, callbacks=[history,model_checkpoint] ) # ,display_progress
 
 # Function to display the target and prediction
 def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y):
