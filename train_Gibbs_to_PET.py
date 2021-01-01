@@ -16,10 +16,11 @@ import NiftiGenerator
 
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
-out_channel = 3
+channel_X = 5
+channel_Y = 1 
 x_data_folder = 'BRATS_GIBBSF3'
 y_data_folder = 'BRATS_F3F3'
-tag = "_50L2S3_BRATS_F3_d3f64_xGF3_yF3F3"
+tag = "_50L2CX5CY1_BRATS_F3_d3f64_xGF3_yF3F3"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
@@ -38,7 +39,7 @@ def train():
     print('-'*50)
     print('Creating and compiling model...')
     print('-'*50)
-    model = Unet.UNetContinuous((img_rows, img_cols, out_channel),out_ch=out_channel,start_ch=64,depth=3)
+    model = Unet.UNetContinuous((img_rows, img_cols, channel_X), out_ch=channel_Y,start_ch=64,depth=3)
     model.compile(optimizer=Adam(lr=1e-4), loss=mean_squared_error, metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
@@ -68,7 +69,7 @@ def train():
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
     niftiGen.initialize( y_data_folder, x_data_folder, niftiGen_augment_opts, niftiGen_norm_opts )
-    generator = niftiGen.generate(slice_samples=out_channel, batch_size=batch_size)
+    generator = niftiGen.generate(Xslice_samples=channel_X, Yslice_samples=channel_Y, batch_size=batch_size)
     # get one sample for progress images
     test_x = np.load('test_x.npy')
     test_y = np.load('test_y.npy')
