@@ -374,12 +374,12 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
 
         return normOptions
 
-    def generate(self, img_size=(256,256), slice_samples=1, batch_size=16):
+    def generate(self, img_size=(256,256), Xslice_samples=1, Yslice_samples=1, batch_size=16):
 
         while True:
             # create empty variables for this batch
-            batch_X = np.zeros( [batch_size,img_size[0],img_size[1],slice_samples] )
-            batch_Y = np.zeros( [batch_size,img_size[0],img_size[1],slice_samples] )
+            batch_X = np.zeros( [batch_size,img_size[0],img_size[1],Xslice_samples] )
+            batch_Y = np.zeros( [batch_size,img_size[0],img_size[1],Yslice_samples] )
 
             for i in range(batch_size):
                 # get a random subject
@@ -400,20 +400,20 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
 
                 # determine sampling range
                 if slice_samples==1:
-                    z = np.random.randint( 0, XimgShape[2]-1 )
+                    zX = np.random.randint( 0, XimgShape[2]-1 )
                 elif slice_samples==3:
-                    z = np.random.randint( 1, XimgShape[2]-2 )
+                    zX = np.random.randint( 1, XimgShape[2]-2 )
                 elif slice_samples==5:
-                    z = np.random.randint( 2, XimgShape[2]-3 )
+                    zX = np.random.randint( 2, XimgShape[2]-3 )
                 elif slice_samples==7:
-                    z = np.random.randint( 3, XimgShape[2]-4 )
+                    zX = np.random.randint( 3, XimgShape[2]-4 )
                 elif slice_samples==9:
-                    z = np.random.randint( 4, XimgShape[2]-5 )
+                    zX = np.random.randint( 4, XimgShape[2]-5 )
                 else:
                     module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
                     sys.exit(1)                    
 
-                module_logger.debug( 'sampling range is {}'.format(z) )
+                module_logger.debug( 'sampling range is {}'.format(zX) )
 
                  # handle input data normalization and sampling
                 if self.normOptions.normXtype == 'function'.lower():
@@ -421,7 +421,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                     # get normalized data (and read whole volume)
                     tmpX = self.normOptions.normXfunction( Ximg.get_fdata() )
                     # sample data
-                    XimgSlices = tmpX[:,:,z-slice_samples//2:z+slice_samples//2+1]
+                    XimgSlices = tmpX[:,:,zX-Xslice_samples//2:zX+Xslice_samples//2+1]
                 else:
                     # type is none, auto, or fixed
                     # prepare normalization
@@ -431,16 +431,34 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                         self.normXscale[j] = np.std( tmpX )
                         self.normXready[j] = True
                     # sample data
-                    XimgSlices = Ximg.slicer[:,:,z-slice_samples//2:z+slice_samples//2+1].get_fdata()
+                    XimgSlices = Ximg.slicer[:,:,zX-Xslice_samples//2:zX+Xslice_samples//2+1].get_fdata()
                     # do normalization
                     XimgSlices = (XimgSlices - self.normXoffset[j]) / self.normXscale[j]
+
+
+                # determine sampling range
+                if slice_samples==1:
+                    zY = np.random.randint( 0, XimgShape[2]-1 )
+                elif slice_samples==3:
+                    zY = np.random.randint( 1, XimgShape[2]-2 )
+                elif slice_samples==5:
+                    zY = np.random.randint( 2, XimgShape[2]-3 )
+                elif slice_samples==7:
+                    zY = np.random.randint( 3, XimgShape[2]-4 )
+                elif slice_samples==9:
+                    zY = np.random.randint( 4, XimgShape[2]-5 )
+                else:
+                    module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
+                    sys.exit(1)                    
+
+                module_logger.debug( 'sampling range is {}'.format(zY) )
 
                 if self.normOptions.normYtype == 'function'.lower():
                     # normalization is performed via a specified function
                     # get normalized data (and read whole volume)
                     tmpY = self.normOptions.normYfunction( Yimg.get_fdata() )
                     # sample data
-                    YimgSlices = tmpY[:,:,z-slice_samples//2:z+slice_samples//2+1]
+                    YimgSlices = tmpY[:,:,zY-Yslice_samples//2:zY+Yslice_samples//2+1]
                 else:
                     # type is none, auto, or fixed
                     # prepare normalization                    
@@ -450,7 +468,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                         self.normYscale[j] = np.std( tmpY )
                         self.normYready[j] = True
                     # sample data
-                    YimgSlices = Yimg.slicer[:,:,z-slice_samples//2:z+slice_samples//2+1].get_fdata()
+                    YimgSlices = Yimg.slicer[:,:,zY-Yslice_samples//2:zY+Yslice_samples//2+1].get_fdata()
                     # do normalization
                     YimgSlices = (YimgSlices - self.normYoffset[j]) / self.normYscale[j]
 
