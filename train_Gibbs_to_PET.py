@@ -67,7 +67,7 @@ def train():
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
     niftiGen.initialize( y_data_folder, x_data_folder, niftiGen_augment_opts, niftiGen_norm_opts )
-    generator = niftiGen.generate(slice_samples=1, batch_size=batch_size)
+    generator = niftiGen.generate(slice_samples=3, batch_size=batch_size)
     # get one sample for progress images
     test_x = np.load('test_x.npy')
     test_y = np.load('test_y.npy')
