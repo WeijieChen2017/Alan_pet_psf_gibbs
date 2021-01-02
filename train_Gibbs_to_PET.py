@@ -151,7 +151,7 @@ def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y
     a.set_title('Losses')
     fig.tight_layout()
     fig.canvas.draw()
-    fig.savefig('progress_image_{0}_{1:05d}.jpg'.format(jpgprogressfile_name,epoch+1))
+    fig.savefig('progress_image_{0}_{1:05d}.jpg'.format(train_para["jpgprogressfile_name"],epoch+1))
     fig.canvas.flush_events()
 
 if __name__ == '__main__':
