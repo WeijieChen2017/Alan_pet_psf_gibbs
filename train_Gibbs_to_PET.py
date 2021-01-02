@@ -21,7 +21,7 @@ train_para ={
     "para_name" : para_name,
     "img_rows" : 256, # image is resampled to this size
     "img_cols" : 256, # image is resampled to this size
-    "channel_X" : 3,
+    "channel_X" : 1,
     "channel_Y" : 1,
     "start_ch" : 64,
     "depth" : 3, 
