@@ -16,16 +16,16 @@ import NiftiGenerator
 
 img_rows = 256 # image is resampled to this size
 img_cols = 256 # image is resampled to this size
-channel_X = 5
+channel_X = 3
 channel_Y = 1 
-x_data_folder = 'BRATS_GIBBSF3'
-y_data_folder = 'BRATS_F3F3'
-tag = "_50L2CX5CY1_BRATS_F3_d3f64_xGF3_yF3F3"
+x_data_folder = 'BRATS_GIBBS'
+y_data_folder = 'BRATS_F3'
+tag = "_25L2CX3CY1_BRATS_F3_d3f64_xG_yF3"
 weightfile_name = 'weights'+tag+'.h5'
 model_name = 'model'+tag+'.json'
 jpgprogressfile_name = 'progress'+tag
 batch_size = 8 # should be smallish. 1-10
-num_epochs = 50 # should train for at least 100-200 in total
+num_epochs = 25 # should train for at least 100-200 in total
 steps_per_epoch = 20*89 # should be enough to be equal to one whole pass through the dataset
 initial_epoch = 0 # for resuming training
 load_weights = False # load trained weights for resuming training
