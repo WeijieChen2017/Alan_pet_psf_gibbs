@@ -40,7 +40,7 @@ train_para ={
 }  
      
 with open("para_"+para_name+".json", "w") as outfile:  
-    json.dump(dictionary, outfile) 
+    json.dump(train_para, outfile) 
 
 #######################
 
