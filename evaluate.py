@@ -18,11 +18,12 @@ import dataUtilities as du
 img_rows = 256 # image is resampled to this size 
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
-out_channel = 3
+channel_X = 5
+channel_Y = 1
 # train_volumes = 60 # number of volumes used in training
 data_folder = 'PET_RSZP_10'
-model_folder = 'Achives_e50S3'
-weights_folder = 'Achives_e50S3'
+model_folder = 'Achives_XYYX'
+weights_folder = 'Achives_XYYX'
 
 # eval_path = "./eval/"
 # if not os.path.exists(eval_path):
@@ -90,11 +91,11 @@ def eval():
             testX_norm = testX_data / testX_max
             
             # inputX = np.transpose(testX_norm, (2,0,1))
-            inputX = createInput(testX_norm, n_slice=out_channel)
+            inputX = createInput(testX_norm, n_slice=channel_X)
             print("inputX shape: ", inputX.shape)
             outputY =  model.predict(inputX, verbose=1)
             print("outputY shape: ", np.transpose(outputY, (1,2,0,3)).shape)
-            predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3))[:, :, :, out_channel // 2]) * testX_max
+            predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3))[:, :, :, channel_Y // 2]) * testX_max
             testX_sum = np.sum(testX_data)
             predY_sum = np.sum(predY_data)
             predY_data = predY_data / predY_sum * testX_sum
