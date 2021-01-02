@@ -18,12 +18,12 @@ import dataUtilities as du
 img_rows = 256 # image is resampled to this size 
 img_cols = 256 # image is resampled to this size
 img_slcs = 89 # should be fixed for all inputs
-channel_X = 5
+channel_X = 3
 channel_Y = 1
 # train_volumes = 60 # number of volumes used in training
 data_folder = 'PET_RSZP_10'
-model_folder = 'Achives_XYYX'
-weights_folder = 'Achives_XYYX'
+model_folder = 'Achives_test'
+weights_folder = 'Achives_test'
 
 # eval_path = "./eval/"
 # if not os.path.exists(eval_path):
