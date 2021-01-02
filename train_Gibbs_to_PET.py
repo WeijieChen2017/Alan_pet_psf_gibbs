@@ -18,6 +18,7 @@ import NiftiGenerator
 para_name = "ex01"
 # Data to be written  
 train_para ={  
+    "para_name" : para_name,
     "img_rows" : 256, # image is resampled to this size
     "img_cols" : 256, # image is resampled to this size
     "channel_X" : 3,
@@ -28,10 +29,9 @@ train_para ={
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
     "y_data_folder" : 'BRATS_F3',
-    "tag" : "_"+para_name+"_25L2CX3CY1_BRATS_F3_d3f64_xG_yF3",
-    "weightfile_name" : 'weights'+tag+'.h5',
-    "model_name" : 'model'+tag+'.json',
-    "jpgprogressfile_name" : 'progress'+tag,
+    "weightfile_name" : 'weights_'+para_name+'.h5',
+    "model_name" : 'model_'+para_name+'.json',
+    "jpgprogressfile_name" : 'progress_'+para_name,
     "batch_size" : 8, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
     "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
