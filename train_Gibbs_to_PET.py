@@ -25,7 +25,7 @@ train_para ={
     "channel_Y" : 1,
     "start_ch" : 64,
     "depth" : 3, 
-    "validation_split" : 0.5,
+    # "validation_split" : 0.5,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
     "y_data_folder" : 'BRATS_F3',
@@ -106,7 +106,7 @@ def train():
     print('-'*50)
     history = History()
     model_checkpoint = ModelCheckpoint(train_para["weightfile_name"],
-                                       monitor='val_loss', 
+                                       monitor='loss', 
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     display_progress = LambdaCallback(on_epoch_end= lambda epoch,
@@ -122,7 +122,7 @@ def train():
               steps_per_epoch=train_para["steps_per_epoch"],
               epochs=train_para["num_epochs"],
               initial_epoch=train_para["initial_epoch"],
-              validation_split=train_para["validation_split"],
+              # validation_split=train_para["validation_split"],
               callbacks=[history, model_checkpoint, display_progress] ) # 
 
 # Function to display the target and prediction
