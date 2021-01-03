@@ -91,8 +91,8 @@ def train():
     niftiGen_norm_opts.normXtype = 'auto'
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
-    niftiGen.initialize(train_para["y_data_folder"],
-                        train_para["x_data_folder"],
+    niftiGen.initialize("./data_train/"+train_para["y_data_folder"],
+                        "./data_train/"+train_para["x_data_folder"],
                         niftiGen_augment_opts, niftiGen_norm_opts )
     generator = niftiGen.generate(Xslice_samples=train_para["channel_X"],
                                   Yslice_samples=train_para["channel_Y"],
