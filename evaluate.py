@@ -53,7 +53,7 @@ def eval():
         test_count += 1
         test_para_name = test_para_name_prefix + "{0:0>3}".format(test_count)
 
-        with open("para_"+train_para_name+".json") as f:
+        with open("./json/train_para_"+train_para_name+".json") as f:
           train_para = json.load(f)
 
         test_para ={  
@@ -119,7 +119,8 @@ def eval():
                 nibabel.save(diffY_file, diffY_name)
         with open("./results/"+test_para["test_para_name"]+"/test_para_"+para_name+".json", "w") as outfile:  
             json.dump(test_para, outfile)
-
+        with open("./json/"+test_para["test_para_name"]+"/test_para_"+para_name+".json", "w") as outfile:  
+            json.dump(test_para, outfile)
         with open("./results/"+test_para["train_para_name"]+"/train_para_"+para_name+".json", "w") as outfile:  
             json.dump(train_para, outfile) 
 
