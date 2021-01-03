@@ -37,11 +37,11 @@ def eval():
             "data_folder" : 'PET_RSZP_10',
         }
 
-        print("Model: ./Achives/model_"+test_para["train_para_name"]+".json")
-        model_list = glob.glob("./Achives/model_"+test_para["train_para_name"]+".json")
+        print("Model: ./achives/model_"+test_para["train_para_name"]+".json")
+        model_list = glob.glob("./achives/model_"+test_para["train_para_name"]+".json")
         model_list.sort()
         for model_path in model_list:
-            weights_path = "./Achives/model_"+test_para["train_para_name"]+".json"
+            weights_path = "./achives/model_"+test_para["train_para_name"]+".json"
             print('-'*50)
             print('Loading model...')
             print('-'*50)
@@ -90,11 +90,11 @@ def eval():
                 diffY_name = diffY_folder+testX_name
                 nibabel.save(predY_file, predY_name)
                 nibabel.save(diffY_file, diffY_name)
-        with open("./results/"+test_para["test_para_name"]+"/test_para_"+para_name+".json", "w") as outfile:  
+        with open("./results/"+test_para["test_para_name"]+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  
             json.dump(test_para, outfile)
-        with open("./json/"+test_para["test_para_name"]+"/test_para_"+para_name+".json", "w") as outfile:  
+        with open("./json/"+test_para["test_para_name"]+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  
             json.dump(test_para, outfile)
-        with open("./results/"+test_para["train_para_name"]+"/train_para_"+para_name+".json", "w") as outfile:  
+        with open("./results/"+test_para["train_para_name"]+"/train_para_"+test_para["train_para_name"]+".json", "w") as outfile:  
             json.dump(train_para, outfile) 
 
 def create_index(dataA, n_slice, zeroPadding=False):
