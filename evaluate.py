@@ -41,7 +41,7 @@ def eval():
         model_list = glob.glob("./achives/model_"+test_para["train_para_name"]+".json")
         model_list.sort()
         for model_path in model_list:
-            weights_path = "./achives/weights_"+test_para["train_para_name"]+".json"
+            weights_path = "./achives/weights_"+test_para["train_para_name"]+".h5"
             print('-'*50)
             print('Loading model...')
             print('-'*50)
