@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard, La
 from tensorflow.keras.losses import mean_absolute_error, mean_squared_error
 from tensorflow.keras.optimizers import Adam
 
-from .model import Unet
-from .util import NiftiGenerator
+from models import Unet
+from utils import NiftiGenerator
 
 para_name = "ex01"
 # Data to be written  

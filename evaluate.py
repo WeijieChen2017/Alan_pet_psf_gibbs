@@ -13,8 +13,8 @@ from keras.optimizers import Adam
 from keras.losses import mean_absolute_error, mean_squared_error
 from keras import backend as K
 
-from .util import dataUtilities as du
-from .util import NiftiGenerator
+from utils import dataUtilities as du
+from utils import NiftiGenerator
 
 train_para_name_hub = ["ex01"]
 test_para_name_prefix = "ex"
