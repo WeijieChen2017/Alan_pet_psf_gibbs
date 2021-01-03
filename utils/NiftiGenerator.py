@@ -493,7 +493,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                     YimgSlices = self.augOptions.additionalFunction( YimgSlices )
 
                 # put into data array for batch for this batch of samples
-                batch_X[i,:,:,:] = XimgSlices
-                batch_Y[i,:,:,:] = YimgSlices
+                batch_X[i,:,:,:] = YimgSlices
+                batch_Y[i,:,:,:] = XimgSlices
 
                 yield (batch_X , batch_Y)

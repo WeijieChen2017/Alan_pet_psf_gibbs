@@ -20,7 +20,7 @@ from utils import NiftiGenerator
 def eval():
     train_para_name_hub = ["ex01"]
     test_para_name_prefix = "ex"
-    test_count = 0
+    test_count = 1
 
     for train_para_name in train_para_name_hub:
         test_count += 1
@@ -34,7 +34,7 @@ def eval():
             "train_para_name" : train_para_name,
             "channel_X" : train_para["channel_X"],
             "channel_Y" : train_para["channel_Y"], 
-            "data_folder" : 'PET_RSZP_10',
+            "data_folder" : 'V10_F3',
         }
 
         print("Model: ./achives/model_"+test_para["train_para_name"]+".json")

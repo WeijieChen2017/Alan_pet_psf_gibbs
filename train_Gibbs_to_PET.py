@@ -15,7 +15,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex01"
+para_name = "ex02"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
