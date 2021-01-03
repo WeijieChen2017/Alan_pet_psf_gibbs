@@ -53,7 +53,7 @@ def eval():
             model.load_weights(weights_path)
 
             print('-'*50)
-            print('Loading images from {}...'.format(data_folder))
+            print('Loading images from {}...'.format(test_para["data_folder"]))
             print('-'*50)
             
             testX_list = glob.glob("./test_data/"+test_para["data_folder"]+"/*.nii")
