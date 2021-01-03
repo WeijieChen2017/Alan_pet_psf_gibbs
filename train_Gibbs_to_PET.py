@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import History, ModelCheckpoint, TensorBoard, La
 from tensorflow.keras.losses import mean_absolute_error, mean_squared_error
 from tensorflow.keras.optimizers import Adam
 
-import Unet
-import NiftiGenerator
+from .model import Unet
+from .util import NiftiGenerator
 
 para_name = "ex01"
 # Data to be written  
@@ -39,7 +39,7 @@ train_para ={
     "load_weights" : False, # load trained weights for resuming training
 }  
      
-with open("para_"+para_name+".json", "w") as outfile:  
+with open("train_para_"+para_name+".json", "w") as outfile:  
     json.dump(train_para, outfile) 
 
 #######################
