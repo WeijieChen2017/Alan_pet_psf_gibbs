@@ -16,39 +16,11 @@ from keras import backend as K
 from utils import dataUtilities as du
 from utils import NiftiGenerator
 
-train_para_name_hub = ["ex01"]
-test_para_name_prefix = "ex"
-test_count = 0
-
-
-def create_index(dataA, n_slice, zeroPadding=False):
-    h, w, z = dataA.shape
-    index = np.zeros((z,n_slice))
-    
-    for idx_z in range(z):
-        for idx_c in range(n_slice):
-            index[idx_z, idx_c] = idx_z-(n_slice-idx_c+1)+n_slice//2+2
-    if zeroPadding:
-        index[index<0]=z
-        index[index>z-1]=z
-    else:
-        index[index<0]=0
-        index[index>z-1]=z-1
-    return index
-
-def createInput(data, n_slice=1):
-    h, w, z = data.shape
-    data_input = np.zeros((z, h, w, n_slice))
-    index = create_index(data, n_slice, zeroPadding=False)
-        
-    for idx_z in range(z):
-        for idx_c in range(n_slice):
-            data_input[idx_z, :, :, idx_c] = data[:, :, int(index[idx_z, idx_c])]
-            
-    return data_input
-
-
 def eval():
+    train_para_name_hub = ["ex01"]
+    test_para_name_prefix = "ex"
+    test_count = 0
+    
     for train_para_name in train_para_name_hub:
         test_count += 1
         test_para_name = test_para_name_prefix + "{0:0>3}".format(test_count)
@@ -123,6 +95,32 @@ def eval():
             json.dump(test_para, outfile)
         with open("./results/"+test_para["train_para_name"]+"/train_para_"+para_name+".json", "w") as outfile:  
             json.dump(train_para, outfile) 
+
+def create_index(dataA, n_slice, zeroPadding=False):
+    h, w, z = dataA.shape
+    index = np.zeros((z,n_slice))
+    
+    for idx_z in range(z):
+        for idx_c in range(n_slice):
+            index[idx_z, idx_c] = idx_z-(n_slice-idx_c+1)+n_slice//2+2
+    if zeroPadding:
+        index[index<0]=z
+        index[index>z-1]=z
+    else:
+        index[index<0]=0
+        index[index>z-1]=z-1
+    return index
+
+def createInput(data, n_slice=1):
+    h, w, z = data.shape
+    data_input = np.zeros((z, h, w, n_slice))
+    index = create_index(data, n_slice, zeroPadding=False)
+        
+    for idx_z in range(z):
+        for idx_c in range(n_slice):
+            data_input[idx_z, :, :, idx_c] = data[:, :, int(index[idx_z, idx_c])]
+            
+    return data_input
 
 if __name__ == '__main__':
     eval()
