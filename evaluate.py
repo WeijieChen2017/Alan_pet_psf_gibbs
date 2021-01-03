@@ -20,7 +20,7 @@ from utils import NiftiGenerator
 def eval():
     train_para_name_hub = ["ex02"]
     test_para_name_prefix = "ex"
-    test_count = 2
+    test_count = 1
 
     for train_para_name in train_para_name_hub:
         test_count += 1
@@ -34,7 +34,7 @@ def eval():
             "train_para_name" : train_para_name,
             "channel_X" : train_para["channel_X"],
             "channel_Y" : train_para["channel_Y"], 
-            "data_folder" : 'V10_F3',
+            "data_folder" : 'PET_RSZP_10',
         }
 
         print("Model: ./achives/model_"+test_para["train_para_name"]+".json")
@@ -90,6 +90,7 @@ def eval():
                 diffY_name = diffY_folder+testX_name
                 nibabel.save(predY_file, predY_name)
                 nibabel.save(diffY_file, diffY_name)
+
         with open("./results/"+test_para["test_para_name"]+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  
             json.dump(test_para, outfile)
         with open("./json/"+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  

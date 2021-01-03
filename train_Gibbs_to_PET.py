@@ -31,6 +31,7 @@ train_para ={
     "y_data_folder" : 'BRATS_F3',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
+    "save_folder" : './achives/',
     "jpgprogressfile_name" : 'progress_'+para_name,
     "batch_size" : 8, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
@@ -39,7 +40,7 @@ train_para ={
     "load_weights" : False, # load trained weights for resuming training
 }  
      
-with open("train_para_"+para_name+".json", "w") as outfile:  
+with open("./json/train_para_"+para_name+".json", "w") as outfile:  
     json.dump(train_para, outfile) 
 
 #######################
@@ -67,12 +68,12 @@ def train():
     model.summary()
 
     # Save the model architecture
-    with open(train_para["model_name"], 'w') as f:
+    with open(train_para["save_folder"]+train_para["model_name"], 'w') as f:
         f.write(model.to_json())
 
     # optionally load weights
     if train_para["load_weights"]:
-        model.load_weights(train_para["weightfile_name"])
+        model.load_weights(train_para["save_folder"]+train_para["weightfile_name"])
 
 
     print('-'*50)
@@ -105,7 +106,7 @@ def train():
     print('Preparing callbacks...')
     print('-'*50)
     history = History()
-    model_checkpoint = ModelCheckpoint(train_para["weightfile_name"],
+    model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
                                        monitor='loss', 
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
