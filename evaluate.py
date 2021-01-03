@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import glob
+import json
 from time import time
 import nibabel
 import numpy as np
@@ -20,7 +21,7 @@ def eval():
     train_para_name_hub = ["ex01"]
     test_para_name_prefix = "ex"
     test_count = 0
-    
+
     for train_para_name in train_para_name_hub:
         test_count += 1
         test_para_name = test_para_name_prefix + "{0:0>3}".format(test_count)
