@@ -15,7 +15,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex03"
+para_name = "ex99" # ex03
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -126,7 +126,7 @@ def train():
               steps_per_epoch=train_para["steps_per_epoch"],
               epochs=train_para["num_epochs"],
               initial_epoch=train_para["initial_epoch"],
-              # validation_split=train_para["validation_split"],
+              validation_split=train_para["validation_split"],
               callbacks=[history, model_checkpoint] ) # , display_progress
 
 # Function to display the target and prediction
