@@ -96,7 +96,13 @@ def eval():
         with open("./json/"+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  
             json.dump(test_para, outfile)
         with open("./results/"+test_para["train_para_name"]+"/train_para_"+test_para["train_para_name"]+".json", "w") as outfile:  
-            json.dump(train_para, outfile) 
+            json.dump(train_para, outfile)
+        
+        progress_folder = "./results/"+test_para["train_para_name"]+"/jpeg/"
+        if not os.path.exists(progress_folder):
+                    os.makedirs(progress_folder)
+        move_progress_cmd = "cp ./jpeg/"+test_para["train_para_name"]+"/*.jpg "+progress_folder
+        os.system(move_progress_cmd)
 
 def create_index(dataA, n_slice, zeroPadding=False):
     h, w, z = dataA.shape

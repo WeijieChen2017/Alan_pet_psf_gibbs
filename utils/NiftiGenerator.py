@@ -376,7 +376,10 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
 
     def generate(self, img_size=(256,256), Xslice_samples=1, Yslice_samples=1, batch_size=16):
 
-        while True:
+        n_iter = 1
+        for idx in range(n_iter):
+
+        # while True:
             # create empty variables for this batch
             batch_X = np.zeros( [batch_size,img_size[0],img_size[1],Xslice_samples] )
             batch_Y = np.zeros( [batch_size,img_size[0],img_size[1],Yslice_samples] )
@@ -493,7 +496,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                     YimgSlices = self.augOptions.additionalFunction( YimgSlices )
 
                 # put into data array for batch for this batch of samples
-                batch_X[i,:,:,:] = YimgSlices
-                batch_Y[i,:,:,:] = XimgSlices
+                batch_X[i,:,:,:] = XimgSlices
+                batch_Y[i,:,:,:] = YimgSlices
 
                 yield (batch_X , batch_Y)
