@@ -18,9 +18,9 @@ from utils import dataUtilities as du
 from utils import NiftiGenerator
 
 def eval():
-    train_para_name_hub = ["ex02"]
+    train_para_name_hub = ["ex03"]
     test_para_name_prefix = "ex"
-    test_count = 1
+    test_count = 2
 
     for train_para_name in train_para_name_hub:
         test_count += 1
