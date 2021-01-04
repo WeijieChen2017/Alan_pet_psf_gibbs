@@ -158,6 +158,7 @@ def split_dataset(folderX, folderY, validation_ratio):
     data_volume_list = np.asarray(data_volume_list)
     np.random.shuffle(data_volume_list)
     data_volume_list = list(data_volume_list)
+    print(data_volume_list)
 
     valid_list = data_volume_list[:int(len(data_volume_list)*validation_ratio)]
     train_list = data_volume_list[int(len(data_volume_list)*validation_ratio):]
