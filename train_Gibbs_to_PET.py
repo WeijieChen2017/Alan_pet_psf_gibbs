@@ -152,16 +152,17 @@ def split_dataset(folderX, folderY, validation_ratio):
         os.makedirs(valid_folderY)
 
 
-    data_volume_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii")
-    data_volume_list.sort()
-    print(data_volume_list)
+    data_path_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii")
+    data_path_list.sort()
     data_volume_list = np.asarray(data_volume_list)
     np.random.shuffle(data_volume_list)
     data_volume_list = list(data_volume_list)
-    print(data_volume_list)
+    data_name_list = []
+    for data_path in data_path_list:
+        data_name_list.append(os.path.basename(data_path))
 
-    valid_list = data_volume_list[:int(len(data_volume_list)*validation_ratio)]
-    train_list = data_volume_list[int(len(data_volume_list)*validation_ratio):]
+    valid_list = data_name_list[:int(len(data_name_list)*validation_ratio)]
+    train_list = data_name_list[int(len(data_name_list)*validation_ratio):]
 
     print("valid_list: ", valid_list)
     print('-'*50)
