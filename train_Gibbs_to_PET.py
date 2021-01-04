@@ -82,7 +82,6 @@ def train():
     print('-'*50)
     print('Setting up NiftiGenerator')
     print('-'*50)
-    niftiGen = NiftiGenerator.PairedNiftiGenerator()
     niftiGen_augment_opts = NiftiGenerator.PairedNiftiGenerator.get_default_augOptions()
     niftiGen_augment_opts.hflips = True
     niftiGen_augment_opts.vflips = True
@@ -96,16 +95,26 @@ def train():
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
 
-    split_dataset(folderX="./data_train/"+train_para["x_data_folder"],
-                  folderY="./data_train/"+train_para["y_data_folder"], 
-                  validation_ratio=0.4)
+    folder_list = split_dataset(folderX="./data_train/"+train_para["x_data_folder"],
+                                folderY="./data_train/"+train_para["y_data_folder"], 
+                                validation_ratio=0.4)
+    [train_folderX, train_folderY, valid_folderX, valid_folderY] = folder_list
+    print(train_folderX, train_folderY, valid_folderX, valid_folderY)
 
-    niftiGen.initialize("./data_train/"+train_para["x_data_folder"],
-                        "./data_train/"+train_para["y_data_folder"],
-                        niftiGen_augment_opts, niftiGen_norm_opts )
-    generator = niftiGen.generate(Xslice_samples=train_para["channel_X"],
-                                  Yslice_samples=train_para["channel_Y"],
-                                  batch_size=train_para["batch_size"])
+    niftiGenT = NiftiGenerator.PairedNiftiGenerator()
+    niftiGenT.initialize(train_folderX, train_folderY,
+                         niftiGen_augment_opts, niftiGen_norm_opts )
+    generatorT = niftiGenT.generate(Xslice_samples=train_para["channel_X"],
+                                    Yslice_samples=train_para["channel_Y"],
+                                    batch_size=train_para["batch_size"])
+
+    niftiGenV = NiftiGenerator.PairedNiftiGenerator()
+    niftiGenV.initialize(valid_folderX, valid_folderY,
+                         niftiGen_augment_opts, niftiGen_norm_opts )
+    generatorV = niftiGenT.generate(Xslice_samples=train_para["channel_X"],
+                                    Yslice_samples=train_para["channel_Y"],
+                                    batch_size=train_para["batch_size"])
+
     # get one sample for progress images
     test_x = np.load('test_x.npy')
     test_y = np.load('test_y.npy')
@@ -127,11 +136,11 @@ def train():
     print('-'*50)
     fig = plt.figure(figsize=(15,5))
     fig.show(False)
-    model.fit(generator, 
+    model.fit(generatorT, 
               steps_per_epoch=train_para["steps_per_epoch"],
               epochs=train_para["num_epochs"],
               initial_epoch=train_para["initial_epoch"],
-              validation_split=train_para["validation_split"],
+              validation_data=generatorV,
               callbacks=[history, model_checkpoint] ) # , display_progress
 
 # Split the dataset and move them to the corresponding folder
@@ -173,12 +182,22 @@ def split_dataset(folderX, folderY, validation_ratio):
         valid_nameY = folderY+"/"+valid_name
         cmdX = "mv "+valid_nameX+" "+valid_folderX
         cmdY = "mv "+valid_nameY+" "+valid_folderY
-        print(cmdX)
-        print(cmdY)
+        # print(cmdX)
+        # print(cmdY)
+        os.system(cmdX)
+        os.system(cmdY)
 
-    exit()
+    for train_name in train_list:
+        train_nameX = folderX+"/"+train_name
+        train_nameY = folderY+"/"+train_name
+        cmdX = "mv "+train_nameX+" "+train_folderX
+        cmdY = "mv "+train_nameY+" "+train_folderY
+        # print(cmdX)
+        # print(cmdY)
+        os.system(cmdX)
+        os.system(cmdY)
 
-
+    return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
 # Function to display the target and prediction
 def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y):
