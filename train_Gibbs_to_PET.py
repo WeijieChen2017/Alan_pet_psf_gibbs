@@ -47,6 +47,9 @@ with open("./json/train_para_"+para_name+".json", "w") as outfile:
 
 def train():
     # set fixed random seed for repeatability
+
+    print(train_para)
+
     np.random.seed(813)
     if train_para["loss"] == "l1":
         loss = mean_absolute_error
