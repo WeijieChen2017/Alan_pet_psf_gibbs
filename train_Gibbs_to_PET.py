@@ -142,7 +142,7 @@ def train():
                         initial_epoch=train_para["initial_epoch"],
                         validation_data=generatorV,
                         validation_steps=100,
-                        callbacks=[history, model_checkpoint] ) # , display_progress
+                        callbacks=[history, model_checkpoint, display_progress] ) # 
 
     dataset_go_back(folder_list, sub_folder_list)
 
@@ -157,7 +157,7 @@ def dataset_go_back(folder_list, sub_folder_list):
     data_validY_list = glob.glob(valid_folderY+"/*.nii")+glob.glob(valid_folderY+"/*.nii.gz")
 
     for data_path in data_trainX_list:
-        cmd = "mv "+data_path+" "+folderX
+       cmd = "mv "+data_path+" "+folderX
         os.system(cmd)
 
     for data_path in data_validX_list:
