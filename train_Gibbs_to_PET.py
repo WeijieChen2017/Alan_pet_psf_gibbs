@@ -15,7 +15,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex99" # ex03
+para_name = "ex05" # ex03
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -25,7 +25,7 @@ train_para ={
     "channel_Y" : 1,
     "start_ch" : 32,
     "depth" : 3, 
-    "validation_split" : 0.5,
+    "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
     "y_data_folder" : 'BRATS_F3',
@@ -99,7 +99,7 @@ def train():
     folderY = "./data_train/"+train_para["y_data_folder"]
     folder_list = [folderX, folderY]
     sub_folder_list = split_dataset(folderX=folderX, folderY=folderY, 
-                                    validation_ratio=0.4)
+                                    validation_ratio=train_para["validation_split"])
     [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
     print(train_folderX, train_folderY, valid_folderX, valid_folderY)
 
@@ -120,10 +120,6 @@ def train():
     #     dataX, dataY = test_data
     #     print(dataX.shape, dataY.shape)
 
-    # get one sample for progress images
-    test_x = np.load('test_x.npy')
-    test_y = np.load('test_y.npy')
-
     print('-'*50)
     print('Preparing callbacks...')
     print('-'*50)
@@ -133,7 +129,7 @@ def train():
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     display_progress = LambdaCallback(on_epoch_end= lambda epoch,
-                                      logs: progresscallback_img2img(epoch, logs, model, history, fig, test_x, test_y) )
+                                      logs: progresscallback_img2img(epoch, logs, model, history, fig, generatorV) )
 
     print('-'*50)
     print('Fitting network...')
@@ -233,25 +229,33 @@ def split_dataset(folderX, folderY, validation_ratio):
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
 # Function to display the target and prediction
-def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y):
+def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
 
     fig.clf()
-    a = fig.add_subplot(1, 4, 1)
-    plt.imshow(np.rot90(np.squeeze(input_x)),cmap='gray')
-    a.axis('off')
-    a.set_title('input X[0]')
-    a = fig.add_subplot(1, 4, 2)
-    plt.imshow(np.rot90(np.squeeze(target_y)),cmap='gray')
-    a.axis('off')
-    a.set_title('target Y[0]')
-    a = fig.add_subplot(1, 4, 3)
-    pred_y = model.predict(input_x)
-    plt.imshow(np.rot90(np.squeeze(pred_y)),cmap='gray')
-    a.axis('off')
-    a.set_title('pred. at ' + repr(epoch+1))
-    a = fig.add_subplot(1, 4, 4)
+
+    for data in generatorV:
+        dataX, dataY = data
+        sliceX = dataX.shape[3]
+        sliceY = dataY.shape[3]
+
+    for idx in range(4):
+        a = fig.add_subplot(3, 5, idx+1)
+        plt.imshow(np.rot90(np.squeeze(dataX[idx, :, :, sliceX//2])),cmap='gray')
+        a.axis('off')
+        a.set_title('input X[0]')
+        a = fig.add_subplot(3, 5, idx+6)
+        plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceX//2])),cmap='gray')
+        a.axis('off')
+        a.set_title('target Y[0]')
+        a = fig.add_subplot(3, 5, idx+11)
+        pred_y = model.predict(dataX[idx, :, :, :])
+        plt.imshow(np.rot90(np.squeeze(pred_y)[:, :, :, sliceY//2]),cmap='gray')
+        a.axis('off')
+        a.set_title('pred. at ' + repr(epoch+1))
+
+    a = fig.add_subplot(3, 5, 5)
     plt.plot(range(epoch+1),history.history['loss'],'b',label='training loss')
-    #plt.plot(range(epoch+1),history.history['val_loss'],'r',label='validation loss')
+    plt.plot(range(epoch+1),history.history['val_loss'],'r',label='validation loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend()
