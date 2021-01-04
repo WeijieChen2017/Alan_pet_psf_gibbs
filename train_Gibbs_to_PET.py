@@ -105,7 +105,7 @@ def train():
 
     niftiGenT = NiftiGenerator.PairedNiftiGenerator()
     niftiGenT.initialize(train_folderX, train_folderY,
-                         niftiGen_augment_opts, niftiGen_norm_opts )
+                         niftiGen_augment_opts, niftiGen_norm_opts)
     generatorT = niftiGenT.generate(Xslice_samples=train_para["channel_X"],
                                     Yslice_samples=train_para["channel_Y"],
                                     batch_size=train_para["batch_size"])
