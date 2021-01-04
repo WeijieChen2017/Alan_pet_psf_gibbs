@@ -117,6 +117,10 @@ def train():
                                     Yslice_samples=train_para["channel_Y"],
                                     batch_size=train_para["batch_size"])
 
+    for test_data in generatorV:
+        dataX, dataY = test_data
+        print(dataX.shape, dataY.shape)
+
     # get one sample for progress images
     test_x = np.load('test_x.npy')
     test_y = np.load('test_y.npy')
