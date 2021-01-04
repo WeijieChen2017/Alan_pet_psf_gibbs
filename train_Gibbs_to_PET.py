@@ -95,10 +95,12 @@ def train():
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
 
-    folder_list = split_dataset(folderX="./data_train/"+train_para["x_data_folder"],
-                                folderY="./data_train/"+train_para["y_data_folder"], 
-                                validation_ratio=0.4)
-    [train_folderX, train_folderY, valid_folderX, valid_folderY] = folder_list
+    folderX = "./data_train/"+train_para["x_data_folder"]
+    folderY = "./data_train/"+train_para["y_data_folder"]
+    folder_list = [folderX, folderY]
+    sub_folder_list = split_dataset(folderX=folderX, folderY=folderY, 
+                                    validation_ratio=0.4)
+    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
     print(train_folderX, train_folderY, valid_folderX, valid_folderY)
 
     niftiGenT = NiftiGenerator.PairedNiftiGenerator()
@@ -130,7 +132,6 @@ def train():
     display_progress = LambdaCallback(on_epoch_end= lambda epoch,
                                       logs: progresscallback_img2img(epoch, logs, model, history, fig, test_x, test_y) )
 
-
     print('-'*50)
     print('Fitting network...')
     print('-'*50)
@@ -142,6 +143,35 @@ def train():
               initial_epoch=train_para["initial_epoch"],
               validation_data=generatorV,
               callbacks=[history, model_checkpoint] ) # , display_progress
+
+    dataset_go_back(folder_list, sub_folder_list)
+
+
+def dataset_go_back(folder_list, sub_folder_list):
+
+    [folderX, folderY] = folder_list
+    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
+    
+    data_trainX_list = glob.glob(train_folderX+"/*.nii")+glob.glob(train_folderX+"/*.nii.gz")
+    data_validX_list = glob.glob(valid_folderX+"/*.nii")+glob.glob(valid_folderX+"/*.nii.gz")
+    data_trainY_list = glob.glob(train_folderY+"/*.nii")+glob.glob(train_folderY+"/*.nii.gz")
+    data_validY_list = glob.glob(valid_folderY+"/*.nii")+glob.glob(valid_folderY+"/*.nii.gz")
+
+    for data_path in data_trainX_list:
+        cmd = "mv "+data_path+" "+folderX
+        os.system(cmd)
+
+    for data_path in data_validX_list:
+        cmd = "mv "+data_path+" "+folderX
+        os.system(cmd)
+
+    for data_path in data_trainY_list:
+        cmd = "mv "+data_path+" "+folderY
+        os.system(cmd)
+
+    for data_path in data_validY_list:
+        cmd = "mv "+data_path+" "+folderY
+        os.system(cmd)
 
 # Split the dataset and move them to the corresponding folder
 def split_dataset(folderX, folderY, validation_ratio):
