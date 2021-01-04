@@ -113,7 +113,7 @@ def train():
     niftiGenV = NiftiGenerator.PairedNiftiGenerator()
     niftiGenV.initialize(valid_folderX, valid_folderY,
                          niftiGen_augment_opts, niftiGen_norm_opts )
-    generatorV = niftiGenT.generate(Xslice_samples=train_para["channel_X"],
+    generatorV = niftiGenV.generate(Xslice_samples=train_para["channel_X"],
                                     Yslice_samples=train_para["channel_Y"],
                                     batch_size=train_para["batch_size"])
 
@@ -126,7 +126,7 @@ def train():
     print('-'*50)
     history = History()
     model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
-                                       monitor='loss', 
+                                       monitor='val_loss', 
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     display_progress = LambdaCallback(on_epoch_end= lambda epoch,
@@ -145,7 +145,6 @@ def train():
               callbacks=[history, model_checkpoint] ) # , display_progress
 
     dataset_go_back(folder_list, sub_folder_list)
-
 
 def dataset_go_back(folder_list, sub_folder_list):
 
