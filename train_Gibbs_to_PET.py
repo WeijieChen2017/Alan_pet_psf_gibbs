@@ -233,12 +233,12 @@ def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
 
     fig.clf()
 
-    for data in generatorV(0):
+    for data in generatorV:
         dataX, dataY = data
         print(dataX.shape, dataY.shape)
-        break
         sliceX = dataX.shape[3]
         sliceY = dataY.shape[3]
+        break
 
     for idx in range(4):
         a = fig.add_subplot(3, 5, idx+1)
