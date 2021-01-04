@@ -145,6 +145,7 @@ def train():
                         epochs=train_para["num_epochs"],
                         initial_epoch=train_para["initial_epoch"],
                         validation_data=generatorV,
+                        validation_steps=100,
                         callbacks=[history, model_checkpoint] ) # , display_progress
 
     dataset_go_back(folder_list, sub_folder_list)
