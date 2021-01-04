@@ -1,4 +1,6 @@
 from utils import NiftiGenerator
+from matplotlib import pyplot as plt
+import numpy as np
 
 para_name = "ex99"
 # Data to be written  
@@ -38,9 +40,29 @@ niftiGen_norm_opts = NiftiGenerator.PairedNiftiGenerator.get_default_normOptions
 niftiGen_norm_opts.normXtype = 'auto'
 niftiGen_norm_opts.normYtype = 'auto'
 print(niftiGen_norm_opts)
-niftiGen.initialize("./data_train/"+train_para["y_data_folder"],
-                    "./data_train/"+train_para["x_data_folder"],
+niftiGen.initialize("./data_train/"+train_para["x_data_folder"],
+                    "./data_train/"+train_para["y_data_folder"],
                     niftiGen_augment_opts, niftiGen_norm_opts )
 generator = niftiGen.generate(Xslice_samples=train_para["channel_X"],
                               Yslice_samples=train_para["channel_Y"],
                               batch_size=train_para["batch_size"])
+
+fig = plt.figure(figsize=(15,5))
+fig.show(False)
+for idx, data in enumerate(generator):
+    (dataX, dataY) = data
+    print(dataX.shape, dataY.shape)
+    fig.clf()
+    a = fig.add_subplot(1, 2, 1)
+    plt.imshow(np.rot90(np.squeeze(dataX[3, :, :, :])),cmap='gray')
+    a.axis('off')
+    a.set_title('dataX')
+    a = fig.add_subplot(1, 2, 2)
+    plt.imshow(np.rot90(np.squeeze(dataY[3, :, :, :])),cmap='gray')
+    a.axis('off')
+    a.set_title('dataY')
+
+    fig.tight_layout()
+    fig.canvas.draw()
+    fig.savefig('progress_image_{0}_{1:05d}.jpg'.format(train_para["jpgprogressfile_name"],idx+1))
+    fig.canvas.flush_events()

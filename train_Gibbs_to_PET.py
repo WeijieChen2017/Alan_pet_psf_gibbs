@@ -15,15 +15,15 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex02"
+para_name = "ex03"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
     "img_rows" : 256, # image is resampled to this size
     "img_cols" : 256, # image is resampled to this size
-    "channel_X" : 1,
+    "channel_X" : 3,
     "channel_Y" : 1,
-    "start_ch" : 64,
+    "start_ch" : 32,
     "depth" : 3, 
     # "validation_split" : 0.5,
     "loss" : "l2",
@@ -92,8 +92,8 @@ def train():
     niftiGen_norm_opts.normXtype = 'auto'
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
-    niftiGen.initialize("./data_train/"+train_para["y_data_folder"],
-                        "./data_train/"+train_para["x_data_folder"],
+    niftiGen.initialize("./data_train/"+train_para["x_data_folder"],
+                        "./data_train/"+train_para["y_data_folder"],
                         niftiGen_augment_opts, niftiGen_norm_opts )
     generator = niftiGen.generate(Xslice_samples=train_para["channel_X"],
                                   Yslice_samples=train_para["channel_Y"],
