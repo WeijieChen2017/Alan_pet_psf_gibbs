@@ -167,7 +167,17 @@ def split_dataset(folderX, folderY, validation_ratio):
     print("valid_list: ", valid_list)
     print('-'*50)
     print("train_list: ", train_list)
+    
+    for valid_name in valid_list:
+        valid_nameX = folderX+"/"+valid_name
+        valid_nameY = folderY+"/"+valid_name
+        cmdX = "mv "+valid_name+" "+valid_folderX
+        cmdY = "mv "+valid_name+" "+valid_folderY
+        print(cmdX)
+        print(cmdY)
+
     exit()
+
 
 
 # Function to display the target and prediction
