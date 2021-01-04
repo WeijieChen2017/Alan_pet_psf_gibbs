@@ -116,10 +116,9 @@ def train():
     generatorV = niftiGenV.generate(Xslice_samples=train_para["channel_X"],
                                     Yslice_samples=train_para["channel_Y"],
                                     batch_size=train_para["batch_size"])
-
-    for test_data in generatorV:
-        dataX, dataY = test_data
-        print(dataX.shape, dataY.shape)
+    # for test_data in generatorV:
+    #     dataX, dataY = test_data
+    #     print(dataX.shape, dataY.shape)
 
     # get one sample for progress images
     test_x = np.load('test_x.npy')
@@ -141,12 +140,12 @@ def train():
     print('-'*50)
     fig = plt.figure(figsize=(15,5))
     fig.show(False)
-    model.fit(generatorT, 
-              steps_per_epoch=train_para["steps_per_epoch"],
-              epochs=train_para["num_epochs"],
-              initial_epoch=train_para["initial_epoch"],
-              validation_data=generatorV,
-              callbacks=[history, model_checkpoint] ) # , display_progress
+    model.fit_generator(generatorT, 
+                        steps_per_epoch=train_para["steps_per_epoch"],
+                        epochs=train_para["num_epochs"],
+                        initial_epoch=train_para["initial_epoch"],
+                        validation_data=generatorV,
+                        callbacks=[history, model_checkpoint] ) # , display_progress
 
     dataset_go_back(folder_list, sub_folder_list)
 
