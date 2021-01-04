@@ -246,7 +246,7 @@ def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
         a.axis('off')
         a.set_title('input X[0]')
         a = fig.add_subplot(3, 5, idx+6)
-        plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceX//2])),cmap='gray')
+        plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceY//2])),cmap='gray')
         a.axis('off')
         a.set_title('target Y[0]')
         a = fig.add_subplot(3, 5, idx+11)
