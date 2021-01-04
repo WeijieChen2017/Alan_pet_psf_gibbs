@@ -235,6 +235,7 @@ def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
 
     for data in generatorV:
         dataX, dataY = data
+        print(dataX.shape, dataY.shape)
         sliceX = dataX.shape[3]
         sliceY = dataY.shape[3]
 
