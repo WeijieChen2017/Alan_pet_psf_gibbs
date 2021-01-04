@@ -152,8 +152,9 @@ def split_dataset(folderX, folderY, validation_ratio):
         os.makedirs(valid_folderY)
 
 
-    data_volume_list = glob.glob(folderX+"*.nii") + glob.glob(folderX+"*.nii")
+    data_volume_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii")
     data_volume_list.sort()
+    print(data_volume_list)
     data_volume_list = np.asarray(data_volume_list)
     np.random.shuffle(data_volume_list)
     data_volume_list = list(data_volume_list)
