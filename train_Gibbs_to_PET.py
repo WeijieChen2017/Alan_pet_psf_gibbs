@@ -157,7 +157,7 @@ def dataset_go_back(folder_list, sub_folder_list):
     data_validY_list = glob.glob(valid_folderY+"/*.nii")+glob.glob(valid_folderY+"/*.nii.gz")
 
     for data_path in data_trainX_list:
-       cmd = "mv "+data_path+" "+folderX
+        cmd = "mv "+data_path+" "+folderX
         os.system(cmd)
 
     for data_path in data_validX_list:
