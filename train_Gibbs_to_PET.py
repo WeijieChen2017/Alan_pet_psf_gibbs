@@ -127,7 +127,7 @@ def train():
               epochs=train_para["num_epochs"],
               initial_epoch=train_para["initial_epoch"],
               # validation_split=train_para["validation_split"],
-              callbacks=[history, model_checkpoint, display_progress] ) # 
+              callbacks=[history, model_checkpoint] ) # , display_progress
 
 # Function to display the target and prediction
 def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y):
