@@ -171,8 +171,8 @@ def split_dataset(folderX, folderY, validation_ratio):
     for valid_name in valid_list:
         valid_nameX = folderX+"/"+valid_name
         valid_nameY = folderY+"/"+valid_name
-        cmdX = "mv "+valid_name+" "+valid_folderX
-        cmdY = "mv "+valid_name+" "+valid_folderY
+        cmdX = "mv "+valid_nameX+" "+valid_folderX
+        cmdY = "mv "+valid_nameY+" "+valid_folderY
         print(cmdX)
         print(cmdY)
 
