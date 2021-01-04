@@ -95,6 +95,11 @@ def train():
     niftiGen_norm_opts.normXtype = 'auto'
     niftiGen_norm_opts.normYtype = 'auto'
     print(niftiGen_norm_opts)
+
+    split_dataset(folderX="./data_train/"+train_para["x_data_folder"],
+                  folderY="./data_train/"+train_para["y_data_folder"], 
+                  validation_ratio=0.4)
+
     niftiGen.initialize("./data_train/"+train_para["x_data_folder"],
                         "./data_train/"+train_para["y_data_folder"],
                         niftiGen_augment_opts, niftiGen_norm_opts )
@@ -128,6 +133,39 @@ def train():
               initial_epoch=train_para["initial_epoch"],
               validation_split=train_para["validation_split"],
               callbacks=[history, model_checkpoint] ) # , display_progress
+
+# Split the dataset and move them to the corresponding folder
+def split_dataset(folderX, folderY, validation_ratio):
+
+    train_folderX = folderX + "/trainX/"
+    train_folderY = folderY + "/trainY/"
+    valid_folderX = folderX + "/validX/"
+    valid_folderY = folderY + "/validY/"
+
+    if not os.path.exists(train_folderX):
+        os.makedirs(train_folderX)
+    if not os.path.exists(train_folderY):
+        os.makedirs(train_folderY)
+    if not os.path.exists(valid_folderX):
+        os.makedirs(valid_folderX)
+    if not os.path.exists(valid_folderY):
+        os.makedirs(valid_folderY)
+
+
+    data_volume_list = glob.glob(folderX+"*.nii") + glob.glob(folderX+"*.nii")
+    data_volume_list.sort()
+    data_volume_list = np.asarray(data_volume_list)
+    np.random.shuffle(data_volume_list)
+    data_volume_list = list(data_volume_list)
+
+    valid_list = data_volume_list[:int(len(data_volume_list)*validation_ratio)]
+    train_list = data_volume_list[int(len(data_volume_list)*validation_ratio):]
+
+    print("valid_list: ", valid_list)
+    print('-'*50)
+    print("train_list: ", train_list)
+    exit()
+
 
 # Function to display the target and prediction
 def progresscallback_img2img(epoch, logs, model, history, fig, input_x, target_y):
