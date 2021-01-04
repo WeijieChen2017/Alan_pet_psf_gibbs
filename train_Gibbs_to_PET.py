@@ -25,7 +25,7 @@ train_para ={
     "channel_Y" : 1,
     "start_ch" : 32,
     "depth" : 3, 
-    # "validation_split" : 0.5,
+    "validation_split" : 0.5,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
     "y_data_folder" : 'BRATS_F3',
