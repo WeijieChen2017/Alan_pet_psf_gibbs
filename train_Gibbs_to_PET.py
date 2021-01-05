@@ -21,10 +21,10 @@ train_para ={
     "para_name" : para_name,
     "img_rows" : 256, # image is resampled to this size
     "img_cols" : 256, # image is resampled to this size
-    "channel_X" : 2,
+    "channel_X" : 3,
     "channel_Y" : 1,
     "start_ch" : 32,
-    "depth" : 3, 
+    "depth" : 2, 
     "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
