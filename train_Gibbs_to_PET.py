@@ -136,13 +136,13 @@ def train():
     print('-'*50)
     fig = plt.figure(figsize=(15,5))
     fig.show(False)
-    model.fit_generator(generatorT, 
-                        steps_per_epoch=train_para["steps_per_epoch"],
-                        epochs=train_para["num_epochs"],
-                        initial_epoch=train_para["initial_epoch"],
-                        validation_data=generatorV,
-                        validation_steps=100,
-                        callbacks=[history, model_checkpoint, display_progress] ) # 
+    model.fit(generatorT, 
+              steps_per_epoch=train_para["steps_per_epoch"],
+              epochs=train_para["num_epochs"],
+              initial_epoch=train_para["initial_epoch"],
+              validation_data=generatorV,
+              validation_steps=100,
+              callbacks=[history, model_checkpoint, display_progress] ) # 
 
     dataset_go_back(folder_list, sub_folder_list)
 
@@ -217,7 +217,6 @@ def split_dataset(folderX, folderY, validation_ratio):
         # print(cmdY)
         os.system(cmdX)
         os.system(cmdY)
-        print('-'*50)
 
     for train_name in train_list:
         train_nameX = folderX+"/"+train_name
@@ -228,7 +227,6 @@ def split_dataset(folderX, folderY, validation_ratio):
         # print(cmdY)
         os.system(cmdX)
         os.system(cmdY)
-        print('*'*50)
 
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
