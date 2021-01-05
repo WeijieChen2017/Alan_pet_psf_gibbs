@@ -103,9 +103,6 @@ def train():
     [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
     print(train_folderX, train_folderY, valid_folderX, valid_folderY)
 
-    dataset_go_back(folder_list, sub_folder_list)
-    exit()
-
     niftiGenT = NiftiGenerator.PairedNiftiGenerator()
     niftiGenT.initialize(train_folderX, train_folderY,
                          niftiGen_augment_opts, niftiGen_norm_opts)
@@ -211,9 +208,6 @@ def split_dataset(folderX, folderY, validation_ratio):
     print('-'*50)
     print("train_list: ", train_list)
 
-    if True:
-        return [train_folderX, train_folderY, valid_folderX, valid_folderY]
-    
     for valid_name in valid_list:
         valid_nameX = folderX+"/"+valid_name
         valid_nameY = folderY+"/"+valid_name
