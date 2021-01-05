@@ -200,11 +200,14 @@ def split_dataset(folderX, folderY, validation_ratio):
         data_name_list.append(os.path.basename(data_path))
 
     valid_list = data_name_list[:int(len(data_name_list)*validation_ratio)]
+    valid_list.sort()
     train_list = data_name_list[int(len(data_name_list)*validation_ratio):]
+    train_list.sort()
 
     print("valid_list: ", valid_list)
     print('-'*50)
     print("train_list: ", train_list)
+    exit()
     
     for valid_name in valid_list:
         valid_nameX = folderX+"/"+valid_name

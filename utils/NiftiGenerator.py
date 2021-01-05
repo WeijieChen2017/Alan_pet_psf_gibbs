@@ -400,6 +400,7 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
 
 
                 max_slice = max(Xslice_samples, Yslice_samples)
+                print(max_slice)
                 imgshape2 = min(XimgShape[2], YimgShape[2])
                 if max_slice==1:
                     z = np.random.randint( 0, imgshape2-1 )
