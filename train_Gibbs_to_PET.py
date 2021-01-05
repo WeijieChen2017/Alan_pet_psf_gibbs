@@ -215,6 +215,7 @@ def split_dataset(folderX, folderY, validation_ratio):
         # print(cmdY)
         os.system(cmdX)
         os.system(cmdY)
+        print('-'*50)
 
     for train_name in train_list:
         train_nameX = folderX+"/"+train_name
@@ -225,6 +226,7 @@ def split_dataset(folderX, folderY, validation_ratio):
         # print(cmdY)
         os.system(cmdX)
         os.system(cmdY)
+        print('*'*50)
 
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
