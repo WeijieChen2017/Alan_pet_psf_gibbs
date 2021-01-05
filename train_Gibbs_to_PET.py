@@ -102,7 +102,7 @@ def train():
                                     validation_ratio=train_para["validation_split"])
     [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
     print(train_folderX, train_folderY, valid_folderX, valid_folderY)
-    
+
     dataset_go_back(folder_list, sub_folder_list)
     exit()
 
@@ -204,7 +204,7 @@ def split_dataset(folderX, folderY, validation_ratio):
 
     valid_list = data_name_list[:int(len(data_name_list)*validation_ratio)]
     valid_list.sort()
-    train_list = data_name_list[int(len(data_name_list)*validation_ratio):]
+    train_list = data_name_list - valid_list
     train_list.sort()
 
     print("valid_list: ", valid_list)
