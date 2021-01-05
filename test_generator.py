@@ -14,8 +14,8 @@ train_para ={
     "depth" : 3, 
     # "validation_split" : 0.5,
     "loss" : "l2",
-    "x_data_folder" : 'data_X',
-    "y_data_folder" : 'data_Y',
+    "x_data_folder" : 'dataX',
+    "y_data_folder" : 'dataY',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
@@ -49,9 +49,12 @@ generator = niftiGen.generate(Xslice_samples=train_para["channel_X"],
 
 fig = plt.figure(figsize=(15,5))
 fig.show(False)
+cnt = 0
 for idx, data in enumerate(generator):
     (dataX, dataY) = data
+    print(idx)
     print(dataX.shape, dataY.shape)
+    print("%"*72)
     fig.clf()
     a = fig.add_subplot(1, 2, 1)
     plt.imshow(np.rot90(np.squeeze(dataX[3, :, :, :])),cmap='gray')
@@ -66,3 +69,6 @@ for idx, data in enumerate(generator):
     fig.canvas.draw()
     fig.savefig('progress_image_{0}_{1:05d}.jpg'.format(train_para["jpgprogressfile_name"],idx+1))
     fig.canvas.flush_events()
+    cnt += 1
+    if cnt > 8:
+        break

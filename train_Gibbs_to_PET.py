@@ -15,13 +15,13 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex06"
+para_name = "ex07"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
     "img_rows" : 256, # image is resampled to this size
     "img_cols" : 256, # image is resampled to this size
-    "channel_X" : 3,
+    "channel_X" : 2,
     "channel_Y" : 1,
     "start_ch" : 32,
     "depth" : 3, 
