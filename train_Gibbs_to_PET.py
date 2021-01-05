@@ -204,7 +204,7 @@ def split_dataset(folderX, folderY, validation_ratio):
 
     valid_list = data_name_list[:int(len(data_name_list)*validation_ratio)]
     valid_list.sort()
-    train_list = data_name_list - valid_list
+    train_list = list(set(data_name_list) - set(valid_list))
     train_list.sort()
 
     print("valid_list: ", valid_list)
