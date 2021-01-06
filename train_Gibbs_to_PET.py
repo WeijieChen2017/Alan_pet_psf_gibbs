@@ -15,20 +15,20 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex09"
+para_name = "ex10"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
-    "img_rows" : 256, # image is resampled to this size
-    "img_cols" : 256, # image is resampled to this size
+    "img_rows" : 240, # image is resampled to this size
+    "img_cols" : 240, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
-    "start_ch" : 64,
-    "depth" : 4, 
+    "start_ch" : 32,
+    "depth" : 3, 
     "validation_split" : 0.2,
     "loss" : "l2",
-    "x_data_folder" : 'BRATS_GIBBS',
-    "y_data_folder" : 'BRATS_F3',
+    "x_data_folder" : 't1',
+    "y_data_folder" : 't2',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
@@ -245,24 +245,25 @@ def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
     predY = model.predict(dataX)
 
     for idx in range(4):
-        a = fig.add_subplot(3, 5, idx+1)
+        a = fig.add_subplot(4, 4, idx+5)
         plt.imshow(np.rot90(np.squeeze(dataX[idx, :, :, sliceX//2])),cmap='gray')
         a.axis('off')
         a.set_title('input X[0]')
-        a = fig.add_subplot(3, 5, idx+6)
+        a = fig.add_subplot(4, 4, idx+9)
         plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceY//2])),cmap='gray')
         a.axis('off')
         a.set_title('target Y[0]')
-        a = fig.add_subplot(3, 5, idx+11)
+        a = fig.add_subplot(4, 4, idx+13)
         plt.imshow(np.rot90(np.squeeze(predY[idx, :, :, sliceY//2])),cmap='gray')
         a.axis('off')
         a.set_title('pred. at ' + repr(epoch+1))
 
-    a = fig.add_subplot(3, 5, 5)
+    a = fig.add_subplot(4, 1, 1)
     plt.plot(range(epoch+1),history.history['loss'],'b',label='training loss')
     plt.plot(range(epoch+1),history.history['val_loss'],'r',label='validation loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
+    plt.yscale('log')
     plt.legend()
     a.set_title('Losses')
     fig.tight_layout()
