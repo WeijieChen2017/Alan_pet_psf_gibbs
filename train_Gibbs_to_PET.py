@@ -15,7 +15,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Unet
 from utils import NiftiGenerator
 
-para_name = "ex10"
+para_name = "ex11"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -23,12 +23,12 @@ train_para ={
     "img_cols" : 240, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
-    "start_ch" : 32,
-    "depth" : 3, 
+    "start_ch" : 64,
+    "depth" : 4, 
     "validation_split" : 0.2,
     "loss" : "l2",
-    "x_data_folder" : 't1',
-    "y_data_folder" : 't2',
+    "x_data_folder" : 'BRATS_GIBBS',
+    "y_data_folder" : 'BRATS_F3',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
