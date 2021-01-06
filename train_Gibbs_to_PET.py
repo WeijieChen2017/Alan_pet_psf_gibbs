@@ -190,7 +190,7 @@ def split_dataset(folderX, folderY, validation_ratio):
         os.makedirs(valid_folderY)
 
 
-    data_path_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii")
+    data_path_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii.gz")
     data_path_list.sort()
     data_path_list = np.asarray(data_path_list)
     np.random.shuffle(data_path_list)
