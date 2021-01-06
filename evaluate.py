@@ -18,9 +18,9 @@ from utils import dataUtilities as du
 from utils import NiftiGenerator
 
 def eval():
-    train_para_name_hub = ["ex11"]
+    train_para_name_hub = ["ex12"]
     test_para_name_prefix = "ex"
-    test_count = 12
+    test_count = 13
     test_count -= 1 # for iteration begining, it add by 1 in the first iteration.
 
     for train_para_name in train_para_name_hub:
@@ -99,7 +99,7 @@ def eval():
         with open("./json/"+"/test_para_"+test_para["test_para_name"]+".json", "w") as outfile:  
             json.dump(test_para, outfile)
         
-        progress_folder = "./results/"+test_para["train_para_name"]+"/jpeg/"
+        progress_folder = "./results/"+test_para["test_para_name"]+"/jpeg/"
         if not os.path.exists(progress_folder):
             os.makedirs(progress_folder)
         move_progress_cmd = "cp ./jpeg/"+test_para["train_para_name"]+"/*.jpg "+progress_folder
