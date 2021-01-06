@@ -19,8 +19,8 @@ para_name = "ex11"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
-    "img_rows" : 240, # image is resampled to this size
-    "img_cols" : 240, # image is resampled to this size
+    "img_rows" : 256, # image is resampled to this size
+    "img_cols" : 256, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
     "start_ch" : 64,
