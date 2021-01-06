@@ -479,4 +479,6 @@ class PairedNiftiGenerator(SingleNiftiGenerator):
                 batch_X[i,:,:,:] = XimgSlices
                 batch_Y[i,:,:,:] = YimgSlices
 
-                yield (batch_X , batch_Y)
+            print(batch_X.shape, batch_Y.shape)
+
+            yield (batch_X , batch_Y)
