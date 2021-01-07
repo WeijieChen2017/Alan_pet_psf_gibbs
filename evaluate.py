@@ -73,6 +73,7 @@ def eval():
                 outputY =  model.predict(inputX, verbose=1)
                 print("outputY shape: ", np.transpose(outputY, (1,2,0,3)).shape)
                 predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3))[:, :, :, test_para["channel_Y"] // 2]) * testX_max
+                predY_data[predY_data < 0] = 0
                 testX_sum = np.sum(testX_data)
                 predY_sum = np.sum(predY_data)
                 predY_data = predY_data / predY_sum * testX_sum
