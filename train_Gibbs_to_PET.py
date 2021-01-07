@@ -40,7 +40,7 @@ train_para ={
     "load_weights" : False, # load trained weights for resuming training
 }  
      
-with open("./json/train_para_"+para_name+".json", "w") as outfile:  
+with open("./json/train_para_"+train_para["para_name"]+".json", "w") as outfile:  
     json.dump(train_para, outfile) 
 
 #######################
@@ -147,6 +147,9 @@ def train():
               callbacks=[history, model_checkpoint, display_progress] ) # 
 
     dataset_go_back(folder_list, sub_folder_list)
+    os.system("mkdir "+train_para["para_name"])
+    os.system("mv *"+train_para["para_name"]+"*.jpg "+train_para["para_name"])
+    os.system("mv "+train_para["para_name"]+" ./jpeg/")
 
 def dataset_go_back(folder_list, sub_folder_list):
 
