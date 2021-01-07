@@ -28,7 +28,7 @@ train_para ={
     "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBSF3',
-    "y_data_folder" : 'BRATS_GIBBSF3',
+    "y_data_folder" : 'BRATS_GIBBSF3_2',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
