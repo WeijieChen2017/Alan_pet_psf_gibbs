@@ -5,7 +5,7 @@ os.system("mkdir 2x")
 for idx in range(10):
 	idx_str = "{0:0>3}".format(idx+1)
 	print(idx_str)
-	cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix z_2x_"+idx_str+" -inset z"+idx_str+".nii -rmode Cu"
+	cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix z_2x_"+idx_str+" -inset z"+idx_str+".nii.gz -rmode Cu"
 	# cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
 	cmd_3 = "3dAFNItoNIFTI -prefix z_2x_"+idx_str+" z_2x_"+idx_str+"+orig"
 	# cmd_4 = "rm -f zeropad+orig.BRIK"
