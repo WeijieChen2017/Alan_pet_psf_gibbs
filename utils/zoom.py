@@ -4,7 +4,7 @@ import glob
 os.system("set AFNI_NIFTI_TYPE_WARN = NO")
 os.system("mkdir 2x")
 
-nii_list = glob.glob("./*.nii")
+nii_list = glob.glob("./*.nii.gz")
 nii_list.sort()
 
 for nii_name in nii_list:
