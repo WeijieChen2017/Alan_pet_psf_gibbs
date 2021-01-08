@@ -2,7 +2,7 @@ import os
 
 os.system("set AFNI_NIFTI_TYPE_WARN = NO")
 os.system("mkdir 2x")
-for idx in range(10):
+for idx in range(369):
 	idx_str = "{0:0>3}".format(idx+1)
 	print(idx_str)
 	cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix z_2x_"+idx_str+" -inset z"+idx_str+".nii.gz -rmode Cu"
