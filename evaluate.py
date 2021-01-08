@@ -35,7 +35,7 @@ def eval():
             "train_para_name" : train_para_name,
             "channel_X" : train_para["channel_X"],
             "channel_Y" : train_para["channel_Y"], 
-            "data_folder" : 'TRI_INPUT',
+            "data_folder" : 'TRI_INPUT_2x',
         }
 
         print("Model: ./achives/model_"+test_para["train_para_name"]+".json")

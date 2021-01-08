@@ -17,8 +17,8 @@ for nii_path in nii_list:
     # cmd_5 = "rm -f zeropad+orig.HEAD"
     cmd_6 = "rm -f 2x_"+nii_name+"+orig.BRIK"
     cmd_7 = "rm -f 2x_"+nii_name+"+orig.HEAD"
-    cmd_8 = "gzip 2x_"+nii_name
-    cmd_9 = "mv 2x_"+nii_name+" ./2x/"
+    cmd_8 = "gzip 2x_"+nii_name+".nii"
+    cmd_9 = "mv 2x_"+nii_name+".nii.gz ./2x/"
     # cmd_6 = "mv y"+idx_str+".nii ../inv_RSZP"
     for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8, cmd_9]:
         print(cmd)
