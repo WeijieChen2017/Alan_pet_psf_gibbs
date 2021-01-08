@@ -23,8 +23,8 @@ train_para ={
     "img_cols" : 512, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
-    "start_ch" : 8,
-    "depth" : 2, 
+    "start_ch" : 32,
+    "depth" : 3, 
     "validation_split" : 0.2,
     "loss" : "l1",
     "x_data_folder" : 'BG2_99',
@@ -33,7 +33,7 @@ train_para ={
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
     "jpgprogressfile_name" : 'progress_'+para_name,
-    "batch_size" : 4, # should be smallish. 1-10
+    "batch_size" : 2, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
     "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
@@ -144,7 +144,7 @@ def train():
               initial_epoch=train_para["initial_epoch"],
               validation_data=generatorV,
               validation_steps=100,
-              callbacks=[history, model_checkpoint, display_progress] ) # 
+              callbacks=[history, model_checkpoint] ) # , display_progress
 
     dataset_go_back(folder_list, sub_folder_list)
     os.system("mkdir "+train_para["para_name"])
@@ -257,12 +257,12 @@ def progresscallback_img2img_multiple(epoch, logs, model, history, fig, generato
         plt.axis('off')
         plt.title('input X[0]')
 
-        plt.subplot(1, 3, 1)
+        plt.subplot(1, 3, 2)
         plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceY//2])),cmap='gray')
         plt.axis('off')
         plt.title('target Y[0]')
 
-        plt.subplot(1, 3, 1)
+        plt.subplot(1, 3, 3)
         plt.imshow(np.rot90(np.squeeze(predY[idx, :, :, sliceY//2])),cmap='gray')
         plt.axis('off')
         plt.title('pred. at ' + repr(epoch+1))
