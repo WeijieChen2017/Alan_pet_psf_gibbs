@@ -7,4 +7,4 @@ nii_list.sort()
 for nii_path in nii_list:
     cmd = "gzip " + nii_path
     print(cmd)
-    os.syetem(cmd)
+    os.system(cmd)
