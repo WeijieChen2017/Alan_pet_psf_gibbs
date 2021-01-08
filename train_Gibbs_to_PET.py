@@ -33,7 +33,7 @@ train_para ={
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
     "jpgprogressfile_name" : 'progress_'+para_name,
-    "batch_size" : 8, # should be smallish. 1-10
+    "batch_size" : 4, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
     "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
