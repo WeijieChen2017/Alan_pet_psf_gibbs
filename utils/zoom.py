@@ -12,9 +12,10 @@ for idx in range(10):
 	# cmd_5 = "rm -f zeropad+orig.HEAD"
 	cmd_6 = "rm -f z_2x_"+idx_str+"+orig.BRIK"
 	cmd_7 = "rm -f z_2x_"+idx_str+"+orig.HEAD"
-	cmd_8 = "mv z_2x_"+idx_str+".nii ./2x/"
+	cmd_8 = "gzip z_2x_"+idx_str+".nii"
+	cmd_9 = "mv z_2x_"+idx_str+".nii.gz ./2x/"
 	# cmd_6 = "mv y"+idx_str+".nii ../inv_RSZP"
-	for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8]:
+	for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8, cmd_9]:
 		print(cmd)
 		os.system(cmd)
 # 3dresample -dxyz 1.172 1.172 2.78 -prefix test -inset BraTS20_Training_001_t1_inv.nii
