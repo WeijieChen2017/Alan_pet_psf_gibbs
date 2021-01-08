@@ -1,24 +1,22 @@
-import glob
-import nibabel as np
-import nibabel as nib
-from scipy.ndimage import zoom
+import os
 
-nii_list = glob.glob("./*.nii")
-nii_list.sort()
-
-for nii_name in nii_list:
-    print("-----------------------------------------------")
-    nii_file = nib.load(nii_name)
-    ori_data = nii_file.get_fdata()
-    zoom_data = zoom(ori_data, (2, 2, 2))
-
-    # px, py, pz = data.shape
-    # qx, qy, qz = (256, 256, 89)
-    # zoom_data = zoom(data, (qx/px, qy/py, qz/pz))
-
-
-    save_file = nib.Nifti1Image(zoom_data, affine=nii_file.affine, header=nii_file.header)
-    # smoothed_file = processing.smooth_image(save_file, fwhm=3, mode='nearest')
-    save_name = nii_name[:-4]+"_2x.nii"
-    nib.save(save_file, save_name)
-    print(nii_name)
+os.system("set AFNI_NIFTI_TYPE_WARN = NO")
+os.system("mkdir 2x")
+for idx in range(10):
+	idx_str = "{0:0>3}".format(idx+1)
+	print(idx_str)
+	cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix p"+idx_str+" -inset z_"+idx_str+"_.nii -rmode Cu"
+	# cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
+	cmd_3 = "3dAFNItoNIFTI -prefix p"+idx_str+" p"+idx_str+"+orig"
+	# cmd_4 = "rm -f zeropad+orig.BRIK"
+	# cmd_5 = "rm -f zeropad+orig.HEAD"
+	cmd_6 = "rm -f p"+idx_str+"+orig.BRIK"
+	cmd_7 = "rm -f p"+idx_str+"+orig.HEAD"
+	cmd_8 = "mv p"+idx_str+".nii ./2x/"
+	# cmd_6 = "mv y"+idx_str+".nii ../inv_RSZP"
+	for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8]:
+		print(cmd)
+		os.system(cmd)
+# 3dresample -dxyz 1.172 1.172 2.78 -prefix test -inset BraTS20_Training_001_t1_inv.nii
+# 3dZeropad -I 16 -S 17 -A 25 -P 26 -L 25 -R 26 Z001+orig -prefix 123
+# 3dAFNItoNIFTI -prefix test test+orig
