@@ -7,12 +7,12 @@ for idx in range(10):
 	print(idx_str)
 	cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix p"+idx_str+" -inset z_"+idx_str+"_.nii -rmode Cu"
 	# cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
-	cmd_3 = "3dAFNItoNIFTI -prefix p"+idx_str+" z"+idx_str+"+orig"
+	cmd_3 = "3dAFNItoNIFTI -prefix z_2x"+idx_str+" z"+idx_str+"+orig"
 	# cmd_4 = "rm -f zeropad+orig.BRIK"
 	# cmd_5 = "rm -f zeropad+orig.HEAD"
-	cmd_6 = "rm -f z"+idx_str+"+orig.BRIK"
-	cmd_7 = "rm -f z"+idx_str+"+orig.HEAD"
-	cmd_8 = "mv z"+idx_str+".nii ./2x/"
+	cmd_6 = "rm -f z_2x"+idx_str+"+orig.BRIK"
+	cmd_7 = "rm -f z_2x"+idx_str+"+orig.HEAD"
+	cmd_8 = "mv z_2x"+idx_str+".nii ./2x/"
 	# cmd_6 = "mv y"+idx_str+".nii ../inv_RSZP"
 	for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8]:
 		print(cmd)
