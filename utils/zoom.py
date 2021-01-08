@@ -10,7 +10,7 @@ for nii_name in nii_list:
     print("-----------------------------------------------")
     nii_file = nib.load(nii_name)
     ori_data = nii_file.get_fdata()
-    zoom_data = zoom(data, (2, 2, 2))
+    zoom_data = zoom(ori_data, (2, 2, 2))
 
     # px, py, pz = data.shape
     # qx, qy, qz = (256, 256, 89)
