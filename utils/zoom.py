@@ -10,7 +10,7 @@ nii_list.sort()
 for nii_path in nii_list:
     nii_name = os.path.basename(nii_path)[:-7]
     print(nii_name)
-    cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix 2x_"+nii_name+" -inset "+nii_name+" -rmode Cu"
+    cmd_1 = "3dresample -dxyz 0.586 0.586 1.39 -prefix 2x_"+nii_name+" -inset "+nii_name+".nii.gz -rmode Cu"
     # cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
     cmd_3 = "3dAFNItoNIFTI -prefix 2x_"+nii_name+" 2x_"+nii_name+"+orig"
     # cmd_4 = "rm -f zeropad+orig.BRIK"
