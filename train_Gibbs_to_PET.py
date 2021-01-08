@@ -259,7 +259,7 @@ def progresscallback_img2img_multiple(epoch, logs, model, history, fig, generato
 
         plt.subplot(1, 3, 1)
         plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceY//2])),cmap='gray')
-        a.axis('off')
+        plt.axis('off')
         plt.title('target Y[0]')
 
         plt.subplot(1, 3, 1)
