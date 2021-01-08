@@ -57,7 +57,7 @@ def eval():
             print('Loading images from {}...'.format(test_para["data_folder"]))
             print('-'*50)
             
-            testX_list = glob.glob("./data_test/"+test_para["data_folder"]+"/*.nii")
+            testX_list = glob.glob("./data_test/"+test_para["data_folder"]+"/*.nii")+glob.glob("./data_test/"+test_para["data_folder"]+"/*.nii.gz")
             testX_list.sort()
             for testX_path in testX_list:
                 print("testX: ", testX_path)
