@@ -131,7 +131,7 @@ def train():
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     display_progress = LambdaCallback(on_epoch_end= lambda epoch,
-                                      logs: progresscallback_img2img(epoch, logs, model, history, fig, generatorV) )
+                                      logs: progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV) )
 
     print('-'*50)
     print('Fitting network...')
@@ -234,6 +234,52 @@ def split_dataset(folderX, folderY, validation_ratio):
         os.system(cmdY)
 
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
+
+
+def progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV):
+
+    fig.clf()
+
+    for data in generatorV:
+        dataX, dataY = data
+        print(dataX.shape, dataY.shape)
+        sliceX = dataX.shape[3]
+        sliceY = dataY.shape[3]
+        break
+
+    predY = model.predict(dataX)
+
+    for idx in range(8):
+
+        plt.figure(figsize=(20, 6), dpi=300)
+        plt.subplot(1, 3, 1)
+        plt.imshow(np.rot90(np.squeeze(dataX[idx, :, :, sliceX//2])),cmap='gray')
+        plt.axis('off')
+        plt.title('input X[0]')
+
+        plt.subplot(1, 3, 1)
+        plt.imshow(np.rot90(np.squeeze(dataY[idx, :, :, sliceY//2])),cmap='gray')
+        a.axis('off')
+        plt.title('target Y[0]')
+
+        plt.subplot(1, 3, 1)
+        plt.imshow(np.rot90(np.squeeze(predY[idx, :, :, sliceY//2])),cmap='gray')
+        plt.axis('off')
+        plt.title('pred. at ' + repr(epoch+1))
+
+        plt.savefig('progress_image_{0}_{1:05d}_samples_{1:02d}.jpg'.format(train_para["jpgprogressfile_name"], epoch+1, idx+1))
+
+    plt.figure(figsize=(8, 6), dpi=300)
+    plt.plot(range(epoch+1),history.history['loss'],'b',label='training loss')
+    plt.plot(range(epoch+1),history.history['val_loss'],'r',label='validation loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.yscale('log')
+    plt.legend()
+    plt.title('Losses')
+    fig.tight_layout()
+    plt.savefig('progress_image_{0}_{1:05d}_loss.jpg'.format(train_para["jpgprogressfile_name"], epoch+1))
+
 
 # Function to display the target and prediction
 def progresscallback_img2img(epoch, logs, model, history, fig, generatorV):
