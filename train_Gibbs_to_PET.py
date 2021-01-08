@@ -23,10 +23,10 @@ train_para ={
     "img_cols" : 512, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
-    "start_ch" : 32,
-    "depth" : 3, 
+    "start_ch" : 8,
+    "depth" : 2, 
     "validation_split" : 0.2,
-    "loss" : "l2",
+    "loss" : "l1",
     "x_data_folder" : 'BG2_99',
     "y_data_folder" : 'BF2_99',
     "weightfile_name" : 'weights_'+para_name+'.h5',
