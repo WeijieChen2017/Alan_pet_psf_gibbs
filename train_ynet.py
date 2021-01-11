@@ -176,7 +176,7 @@ def train():
                 # Compute the loss value for this batch.
                 loss_value = loss_fn(batch_Y, predictions)
                 loss_idx_mri = n_epochs*train_para["epoch_per_MRI"]+idx
-                print(loss_idx_mri)
+                # print(loss_idx_mri)
                 loss_mri[loss_idx_mri] = np.mean(loss_value)
                 print("Phase MRI loss: ", np.mean(loss_value))
 
@@ -201,7 +201,7 @@ def train():
                 gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
                 loss_value = loss_fn(gt_Z, predictions)
                 loss_idx_pet = n_epochs*train_para["epoch_per_MRI"]+idx
-                print(loss_idx_pet)
+                # print(loss_idx_pet)
                 loss_pet[loss_idx_pet] = np.mean(loss_value)
                 print("Phase PET loss: ", np.mean(loss_value))
 
@@ -214,6 +214,9 @@ def train():
         if n_epochs % train_para["save_per_epochs"] == 0:
             model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
             model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
+            np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_mri.npy", loss_mri)
+            np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_pet.npy", loss_pet)
+            print("Checkpoints saved for epochs ", n_epochs+1)
         if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"]:
             break
         n_epochs += 1
