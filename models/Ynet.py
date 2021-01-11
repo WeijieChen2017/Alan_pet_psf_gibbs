@@ -1,4 +1,4 @@
-from tensorflow.keras import Input
+from tensorflow.keras import Input, Sequential
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, Concatenate, MaxPooling2D, UpSampling2D, Dropout, BatchNormalization, Masking
 
@@ -31,6 +31,38 @@ def conv_block(m, dim, acti, bn, res, do=0):
     n = Conv2D(dim, 3, activation=acti, padding='same')(n)
     n = BatchNormalization()(n) if bn else n
     return Concatenate()([m, n]) if res else n
+
+def encoder(m, dim, depth, acti, bn,  mp, res):
+    for idx in range(depth):
+        n = conv_block(m, dim, acti, bn, res)
+        m = MaxPooling2D()(n) if mp else Conv2D(dim, 3, strides=2, padding='same')(n)
+    return m
+
+def decoder(m, dim, out_ch, depth, acti, do, bn, up, res):
+    m = conv_block(m, dim, acti, bn, res, do)
+    for idx in range(depth):
+        if up:
+            m = UpSampling2D()(m)
+            m = Conv2D(dim, 2, activation=acti, padding='same')(m)
+        else:
+            m = Conv2DTranspose(dim, 3, strides=2, activation=acti, padding='same')(m)
+        m = conv_block(m, dim, acti, bn, res)
+    m = Conv2D(out_ch, 1, activation='linear')(m)
+    return m
+
+def YNet(img_shape_PET, img_shape_MRI, out_ch=1, start_ch=64, depth=4, inc_rate=2., activation='relu',
+         dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
+    i_pet = Input(shape=img_shape_PET)
+    i_mri = Input(shape=img_shape_MRI)
+    en_pet = encoder(m = i_pet, dim=start_ch, depth=depth, acti=activation,
+                     bn=batchnorm, mp=maxpool, res=residual)
+    en_mri = encoder(m = i_mri, dim=start_ch, depth=depth, acti=activation,
+                     bn=batchnorm, mp=maxpool, res=residual)
+    mid = Concatenate()([en_pet, en_mri])
+    de = decoder(m=mid, dim=start_ch, out_ch=out_ch, depth=depth, acti=activation,
+                do=dropout, bn=batchnorm, up=upconv, res=residual)
+    return Model(inputs=[i_mri, i_pet], outputs=de)
+
 
 def level_block(m, dim, depth, inc, acti, do, bn,  mp, up, res):
     if depth > 0:
