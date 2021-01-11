@@ -38,7 +38,7 @@ train_para ={
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
-    "save_per_epochs" : 50,
+    "save_per_epochs" : 1000,
     "jpgprogressfile_name" : 'progress_'+para_name,
     "batch_size" : 2, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
@@ -203,6 +203,7 @@ def train():
 
         if n_epochs % train_para["save_per_epochs"] == 0:
             model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+            model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
         if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"]:
             break
         n_epochs += 1
@@ -215,6 +216,8 @@ def train():
     #           validation_data=generatorV,
     #           validation_steps=100,
     #           callbacks=[history, model_checkpoint] ) # , display_progress
+    model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+    model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
     dataset_go_back(folder_list, sub_folder_list)
     os.system("mkdir "+train_para["para_name"])
     os.system("mv *"+train_para["para_name"]+"*.jpg "+train_para["para_name"])
