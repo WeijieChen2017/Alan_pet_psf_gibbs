@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet01"
+para_name = "ynet02"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -169,7 +169,7 @@ def train():
             # Open a GradientTape.
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
-                predictions = model([batch_X, batch_Z])
+                predictions = model([batch_X, batch_Z, 1, 0])
                 # Compute the loss value for this batch.
                 loss_value = loss_fn(batch_Y, predictions)
                 print("Phase MRI loss: ", np.mean(loss_value))
@@ -189,7 +189,7 @@ def train():
             # Open a GradientTape.
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
-                predictions = model([batch_X, batch_Z])
+                predictions = model([batch_X, batch_Z, 0, 1])
                 # Compute the loss value for this batch.
                 gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
                 loss_value = loss_fn(gt_Z, predictions)

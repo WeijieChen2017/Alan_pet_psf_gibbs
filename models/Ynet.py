@@ -58,10 +58,10 @@ def YNet(img_shape_PET, img_shape_MRI, out_ch=1, start_ch=64, depth=4, inc_rate=
                      bn=batchnorm, mp=maxpool, res=residual)
     en_mri = encoder(m = i_mri, dim=start_ch, depth=depth, acti=activation,
                      bn=batchnorm, mp=maxpool, res=residual)
-    mid = Concatenate()([en_pet, en_mri])
+    mid = Concatenate()([en_pet*th_pet, en_mri*th_mri])
     de = decoder(m=mid, dim=start_ch, out_ch=out_ch, depth=depth, acti=activation,
                 do=dropout, bn=batchnorm, up=upconv, res=residual)
-    return Model(inputs=[i_mri, i_pet], outputs=de)
+    return Model(inputs=[i_mri, i_pet, th_mri, th_pet], outputs=de)
 
 
 def level_block(m, dim, depth, inc, acti, do, bn,  mp, up, res):
