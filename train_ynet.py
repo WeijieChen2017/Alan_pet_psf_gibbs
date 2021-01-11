@@ -151,6 +151,8 @@ def train():
     loss_fn = loss
     optimizer = Adam(lr=1e-4)
     n_epochs = 0
+    loss_mri = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_MRI"]))
+    loss_pet = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_PET"]))
 
     # Iterate over the batches of a dataset.
     for batch_X, batch_Y, batch_Z in generatorT:
@@ -170,9 +172,12 @@ def train():
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
                 predictions = model([batch_X, batch_Z, 
-                                     np.ones((32, 32, 32)), np.zeros((32, 32, 32))])
+                                     np.ones((1, )), np.zeros((1, ))])
                 # Compute the loss value for this batch.
                 loss_value = loss_fn(batch_Y, predictions)
+                loss_idx_mri = n_epochs*train_para["epoch_per_MRI"]+idx
+                print(loss_idx_mri)
+                loss_mri[loss_idx_mri] = np.mean(loss_value)
                 print("Phase MRI loss: ", np.mean(loss_value))
 
             
@@ -191,10 +196,13 @@ def train():
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
                 predictions = model([batch_X, batch_Z,
-                                     np.zeros((32, 32, 32)), np.ones((32, 32, 32))])
+                                     np.zeros((1, )), np.ones((1, ))])
                 # Compute the loss value for this batch.
                 gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
                 loss_value = loss_fn(gt_Z, predictions)
+                loss_idx_pet = n_epochs*train_para["epoch_per_MRI"]+idx
+                print(loss_idx_pet)
+                loss_pet[loss_idx_pet] = np.mean(loss_value)
                 print("Phase PET loss: ", np.mean(loss_value))
 
             
@@ -228,16 +236,18 @@ def train():
 
 def freeze_phase(model, phase):
     PET_set = [3, 5, 9, 11, 15, 17]
-    MRI_set = [2, 4, 8, 10, 14, 16, 21, 23, 25, 26, 27, 29, 30, 31, 33, 34 ,35 ,36]
+    MRI_set = [2, 4, 8, 10, 14, 16, 25, 27, 29, 30, 31, 33, 34, 35, 37, 38, 39, 40]
     if phase == "MRI":
         for idx in PET_set:
             model.layers[idx].trainable = False
         for idx in MRI_set:
             model.layers[idx].trainable = True
+            # print( model.layers[idx].name)
 
     if phase == "PET":
         for idx in PET_set:
             model.layers[idx].trainable = True
+            # print( model.layers[idx].name)
         for idx in MRI_set:
             model.layers[idx].trainable = False
 
