@@ -1,6 +1,7 @@
 from tensorflow.keras import Input, Sequential
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Conv2D, Conv2DTranspose, Concatenate, MaxPooling2D, UpSampling2D, Dropout, BatchNormalization, Masking
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, Concatenate, MaxPooling2D, Multiply
+from tensorflow.keras.layers import UpSampling2D, Dropout, BatchNormalization, Masking
 
 '''
 from: https://github.com/pietz/unet-keras/blob/master/unet.py
@@ -54,13 +55,15 @@ def YNet(img_shape_PET, img_shape_MRI, out_ch=1, start_ch=64, depth=4, inc_rate=
          dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
     i_pet = Input(shape=img_shape_PET)
     i_mri = Input(shape=img_shape_MRI)
-    th_mri = Input(shape=(1,))
-    th_pet = Input(shape=(1,))
+    th_mri = Input(shape=img_shape_MRI)
+    th_pet = Input(shape=img_shape_PET)
     en_pet = encoder(m = i_pet, dim=start_ch, depth=depth, acti=activation,
                      bn=batchnorm, mp=maxpool, res=residual)
     en_mri = encoder(m = i_mri, dim=start_ch, depth=depth, acti=activation,
                      bn=batchnorm, mp=maxpool, res=residual)
-    mid = Concatenate()([en_pet*th_pet, en_mri*th_mri])
+    gated_en_pet = Multiply()([en_pet, th_pet])
+    gated_en_mri = Multiply()([en_mri, th_mri])
+    mid = Concatenate()([gated_en_pet, gated_en_mri])
     de = decoder(m=mid, dim=start_ch, out_ch=out_ch, depth=depth, acti=activation,
                 do=dropout, bn=batchnorm, up=upconv, res=residual)
     return Model(inputs=[i_mri, i_pet, th_mri, th_pet], outputs=de)

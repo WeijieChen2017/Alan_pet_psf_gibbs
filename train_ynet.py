@@ -169,7 +169,8 @@ def train():
             # Open a GradientTape.
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
-                predictions = model([batch_X, batch_Z, 1, 0])
+                predictions = model([batch_X, batch_Z, 
+                                     np.ones((batch_X.shape)), np.zeros((batch_Z.shape))])
                 # Compute the loss value for this batch.
                 loss_value = loss_fn(batch_Y, predictions)
                 print("Phase MRI loss: ", np.mean(loss_value))
@@ -189,7 +190,8 @@ def train():
             # Open a GradientTape.
             with tensorflow.GradientTape() as tape:
                 # Forward pass.
-                predictions = model([batch_X, batch_Z, 0, 1])
+                predictions = model([batch_X, batch_Z,
+                                     np.zeros((batch_X.shape)), np.ones((batch_Z.shape))])
                 # Compute the loss value for this batch.
                 gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
                 loss_value = loss_fn(gt_Z, predictions)
