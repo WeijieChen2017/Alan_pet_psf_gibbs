@@ -54,6 +54,8 @@ def YNet(img_shape_PET, img_shape_MRI, out_ch=1, start_ch=64, depth=4, inc_rate=
          dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
     i_pet = Input(shape=img_shape_PET)
     i_mri = Input(shape=img_shape_MRI)
+    th_mri = Input(shape=(1,))
+    th_pet = Input(shape=(1,))
     en_pet = encoder(m = i_pet, dim=start_ch, depth=depth, acti=activation,
                      bn=batchnorm, mp=maxpool, res=residual)
     en_mri = encoder(m = i_mri, dim=start_ch, depth=depth, acti=activation,
