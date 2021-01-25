@@ -62,6 +62,7 @@ def eval():
             testX_list = glob.glob("./data_test/"+test_para["data_folder"]+"/*.nii")+glob.glob("./data_test/"+test_para["data_folder"]+"/*.nii.gz")
             testX_list.sort()
             for testX_path in testX_list:
+                print("&"*50)
                 print("testX: ", testX_path)
                 testX_name = os.path.basename(testX_path)
                 testX_file = nibabel.load(testX_path)
@@ -73,7 +74,7 @@ def eval():
                 inputX = createInput(testX_norm, n_slice=test_para["channel_X"])
                 print("InputX Mean value: ", np.mean(inputX))
                 print(inputX.shape)
-                eval_input = [inputX, inputX, np.ones((inputX.shape[0], )), np.ones((inputX.shape[0], ))]
+                eval_input = [np.zeros(inputX.shape), inputX, np.zeros((inputX.shape[0], )), np.ones((inputX.shape[0], ))]
                 print("inputX shape: ", inputX.shape)
                 outputY =  model.predict(eval_input, verbose=1)
                 print("outputY shape: ", np.transpose(outputY, (1,2,0,3)).shape)
