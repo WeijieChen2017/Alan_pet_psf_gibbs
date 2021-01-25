@@ -64,14 +64,15 @@ def eval():
                 print("testX: ", testX_path)
                 testX_name = os.path.basename(testX_path)
                 testX_file = nibabel.load(testX_path)
-                testX_data = testX_file.get_fdata()
+                testX_data = testX_file.get_f...data()
                 testX_max = np.amax(testX_data)
                 testX_norm = testX_data / testX_max
                 
                 # inputX = np.transpose(testX_norm, (2,0,1))
                 inputX = createInput(testX_norm, n_slice=test_para["channel_X"])
+                eval_input = [inputX, np.zeros(inputX.shape), np.zeros((1, )), np.ones((1, ))]
                 print("inputX shape: ", inputX.shape)
-                outputY =  model.predict(inputX, verbose=1)
+                outputY =  model.predict(eval_input, verbose=1)
                 print("outputY shape: ", np.transpose(outputY, (1,2,0,3)).shape)
                 predY_data = np.squeeze(np.transpose(outputY, (1,2,0,3))[:, :, :, test_para["channel_Y"] // 2]) * testX_max
                 predY_data[predY_data < 0] = 0
