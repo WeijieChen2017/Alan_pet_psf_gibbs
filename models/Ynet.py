@@ -1,13 +1,13 @@
 from tensorflow.keras import Input, Sequential
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, Concatenate, MaxPooling2D, Multiply
-from tensorflow.keras.layers import UpSampling2D, Dropout, BatchNormalization, Masking
+from tensorflow.keras.layers import UpSampling2D, Dropout, BatchNormalization, Masking, Add
 
 '''
 from: https://github.com/pietz/unet-keras/blob/master/unet.py
 modified by abmcmillan@wisc.edu to enable continuous output.
 
-
+s
 
 U-Net: Convolutional Networks for Biomedical Image Segmentation
 (https://arxiv.org/abs/1505.04597)
@@ -63,7 +63,7 @@ def YNet(img_shape_PET, img_shape_MRI, out_ch=1, start_ch=64, depth=4, inc_rate=
                      bn=batchnorm, mp=maxpool, res=residual)
     gated_en_pet = Multiply()([en_pet, th_pet])
     gated_en_mri = Multiply()([en_mri, th_mri])
-    mid = Concatenate()([gated_en_pet, gated_en_mri])
+    mid = Add()([gated_en_pet, gated_en_mri])
     de = decoder(m=mid, dim=start_ch, out_ch=out_ch, depth=depth, acti=activation,
                 do=dropout, bn=batchnorm, up=upconv, res=residual)
     return Model(inputs=[i_mri, i_pet, th_mri, th_pet], outputs=de)

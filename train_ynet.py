@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet02"
+para_name = "ynet03"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
