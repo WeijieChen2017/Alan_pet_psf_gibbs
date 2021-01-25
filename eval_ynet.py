@@ -53,6 +53,7 @@ def eval():
             with open(model_path, 'r') as f:
                 model = model_from_json(f.read())
             model.load_weights(weights_path)
+            model.summary()
 
             print('-'*50)
             print('Loading images from {}...'.format(test_para["data_folder"]))
