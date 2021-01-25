@@ -71,6 +71,7 @@ def eval():
                 
                 # inputX = np.transpose(testX_norm, (2,0,1))
                 inputX = createInput(testX_norm, n_slice=test_para["channel_X"])
+                print("InputX Mean value: ", np.mean(inputX))
                 print(inputX.shape)
                 eval_input = [np.zeros(inputX.shape), inputX, np.zeros((inputX.shape[0], )), np.ones((inputX.shape[0], ))]
                 print("inputX shape: ", inputX.shape)
@@ -81,6 +82,7 @@ def eval():
                 testX_sum = np.sum(testX_data)
                 predY_sum = np.sum(predY_data)
                 predY_data = predY_data / predY_sum * testX_sum
+                print("PredY Mean value: ", np.mean(predY_data))
                 diffY_data = np.subtract(testX_data, predY_data)
 
                 predY_folder = "./results/"+test_para["test_para_name"]+"/predY/"
