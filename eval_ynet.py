@@ -18,7 +18,7 @@ from utils import dataUtilities as du
 from utils import NiftiGenerator
 
 def eval():
-    train_para_name_hub = ["ynet01"]
+    train_para_name_hub = ["ynet02"]
     test_para_name_prefix = "ex"
     test_count = 1
     test_count -= 1 # for iteration begining, it add by 1 in the first iteration.
@@ -72,7 +72,7 @@ def eval():
                 # inputX = np.transpose(testX_norm, (2,0,1))
                 inputX = createInput(testX_norm, n_slice=test_para["channel_X"])
                 print(inputX.shape)
-                eval_input = [inputX, np.zeros(inputX.shape)]
+                eval_input = [inputX, np.zeros(inputX.shape), np.zeros((1, )), np.ones((1, ))]
                 print("inputX shape: ", inputX.shape)
                 outputY =  model.predict(eval_input, verbose=1)
                 print("outputY shape: ", np.transpose(outputY, (1,2,0,3)).shape)
