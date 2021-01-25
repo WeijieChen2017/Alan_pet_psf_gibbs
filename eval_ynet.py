@@ -64,7 +64,7 @@ def eval():
                 print("testX: ", testX_path)
                 testX_name = os.path.basename(testX_path)
                 testX_file = nibabel.load(testX_path)
-                testX_data = testX_file.get_f...data()
+                testX_data = testX_file.get_fdata()
                 testX_max = np.amax(testX_data)
                 testX_norm = testX_data / testX_max
                 
