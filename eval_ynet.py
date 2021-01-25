@@ -70,6 +70,7 @@ def eval():
                 
                 # inputX = np.transpose(testX_norm, (2,0,1))
                 inputX = createInput(testX_norm, n_slice=test_para["channel_X"])
+                print(inputX.shape)
                 eval_input = [inputX, np.zeros(inputX.shape), np.zeros((1, )), np.ones((1, ))]
                 print("inputX shape: ", inputX.shape)
                 outputY =  model.predict(eval_input, verbose=1)
