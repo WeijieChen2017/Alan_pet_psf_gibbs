@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet03"
+para_name = "ynet04"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -190,7 +190,7 @@ def train():
         model = freeze_phase(model, phase="PET")
         model.compile(optimizer=optimizer,loss=loss_fn,
                       metrics=[mean_squared_error,mean_absolute_error])
-        for idx in range(train_para["epoch_per_MRI"]):
+        for idx in range(train_para["epoch_per_PET"]):
 
             # Open a GradientTape.
             with tensorflow.GradientTape() as tape:
@@ -217,7 +217,7 @@ def train():
             np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_mri.npy", loss_mri)
             np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_pet.npy", loss_pet)
             print("Checkpoints saved for epochs ", n_epochs+1)
-        if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"]:
+        if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
             break
         n_epochs += 1
 
