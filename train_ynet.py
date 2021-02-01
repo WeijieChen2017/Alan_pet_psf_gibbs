@@ -370,9 +370,9 @@ def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_
         # print("pet_eval", pet_eval.shape)
 
         img_mri_input = np.squeeze(mri_input[int(mri_input.shape[0]//2), :, :, int(mri_input.shape[3]//2)])
-        img_mri_output = np.squeeze(mri_output[int(mri_output[0]//2), :, :, int(mri_output.shape[3]//2)])
+        img_mri_output = np.squeeze(mri_output[int(mri_output.shape[0]//2), :, :, int(mri_output.shape[3]//2)])
         img_mri_eval = np.squeeze(mri_eval[int(mri_eval.shape[0]//2), :, :, int(mri_eval.shape[3]//2)])
-        img_pet_input = np.squeeze(pet_input[int(pet_input[0]//2), :, :, int(pet_input[3]//2)])
+        img_pet_input = np.squeeze(pet_input[int(pet_input.shape[0]//2), :, :, int(pet_input.shape[3]//2)])
         img_pet_eval = np.squeeze(pet_eval[int(pet_eval.shape[0]//2), :, :, int(pet_eval.shape[3]//2)])
 
         plt.figure(figsize=(16, 6), dpi=300)
