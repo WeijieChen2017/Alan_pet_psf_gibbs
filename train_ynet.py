@@ -26,10 +26,10 @@ train_para ={
     "channel_X" : 5,
     "channel_Y" : 1,
     "channel_Z" : 5,
-    "start_ch" : 32,
+    "start_ch" : 64,
     "depth" : 3,
     "epoch_per_MRI": 1,
-    "epoch_per_PET": 1,
+    "epoch_per_PET": 10,
     "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
@@ -40,7 +40,6 @@ train_para ={
     "save_folder" : './achives/',
     "save_per_epochs" : 1000,
     "eval_per_epochs" : 1000,
-    "eval_img_num" : 4,
     "jpgprogressfile_name" : para_name,
     "batch_size" : 2, # should be smallish. 1-10
     "num_epochs" : 5, # should train for at least 100-200 in total
@@ -192,6 +191,8 @@ def train():
         model = freeze_phase(model, phase="PET")
         model.compile(optimizer=optimizer,loss=loss_fn,
                       metrics=[mean_squared_error,mean_absolute_error])
+
+
         for idx in range(train_para["epoch_per_PET"]):
 
             # Open a GradientTape.
@@ -228,7 +229,7 @@ def train():
                           model = model,
                           loss_fn = loss_fn,
                           epochs = n_epochs,
-                          img_num = train_para["eval_img_num"],
+                          img_num = train_para["batch_size"],
                           save_name = train_para["jpgprogressfile_name"])
         n_epochs += 1
 
@@ -369,11 +370,11 @@ def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_
         # print("pet_input", pet_input.shape)
         # print("pet_eval", pet_eval.shape)
 
-        img_mri_input = np.squeeze(mri_input[int(mri_input.shape[0]//2), :, :, int(mri_input.shape[3]//2)])
-        img_mri_output = np.squeeze(mri_output[int(mri_output.shape[0]//2), :, :, int(mri_output.shape[3]//2)])
-        img_mri_eval = np.squeeze(mri_eval[int(mri_eval.shape[0]//2), :, :, int(mri_eval.shape[3]//2)])
-        img_pet_input = np.squeeze(pet_input[int(pet_input.shape[0]//2), :, :, int(pet_input.shape[3]//2)])
-        img_pet_eval = np.squeeze(pet_eval[int(pet_eval.shape[0]//2), :, :, int(pet_eval.shape[3]//2)])
+        img_mri_input = np.squeeze(mri_input[idx, :, :, int(mri_input.shape[3]//2)])
+        img_mri_output = np.squeeze(mri_output[idx, :, :, int(mri_output.shape[3]//2)])
+        img_mri_eval = np.squeeze(mri_eval[idx, :, :, int(mri_eval.shape[3]//2)])
+        img_pet_input = np.squeeze(pet_input[idx, :, :, int(pet_input.shape[3]//2)])
+        img_pet_eval = np.squeeze(pet_eval[idx, :, :, int(pet_eval.shape[3]//2)])
 
         plt.figure(figsize=(16, 6), dpi=300)
         plt.subplot(2, 3, 1)
@@ -401,7 +402,7 @@ def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_
         plt.axis('off')
         plt.title('pet_eval')
 
-        plt.title("mri_loss: "+str(mri_loss)+" || pet_loss: "+str(pet_loss))
+        plt.title("MSR:   mri_loss: "+str(np.mean(mri_loss))+" || pet_loss: "+str(np.mean(pet_loss)))
         plt.savefig('progress_image_{0}_{1:05d}_samples_{1:02d}.jpg'.format(save_name, epochs+1, idx+1))
 
 
