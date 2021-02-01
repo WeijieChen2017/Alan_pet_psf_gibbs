@@ -401,7 +401,7 @@ def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_
         plt.axis('off')
         plt.title('pet_eval')
 
-        plt.title("mri_loss: "+mri_loss+" || pet_loss: "+pet_loss)
+        plt.title("mri_loss: "+str(mri_loss)+" || pet_loss: "+str(pet_loss))
         plt.savefig('progress_image_{0}_{1:05d}_samples_{1:02d}.jpg'.format(save_name, epochs+1, idx+1))
 
 
