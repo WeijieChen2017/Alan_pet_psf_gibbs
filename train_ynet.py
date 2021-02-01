@@ -226,6 +226,7 @@ def train():
                           mri_output = batch_Y,
                           pet_input = batch_Z,
                           model = model,
+                          loss_fn = loss_fn,
                           epochs = n_epochs,
                           img_num = train_para["eval_img_num"],
                           save_name = train_para["jpgprogressfile_name"])
@@ -352,7 +353,7 @@ def split_dataset(folderX, folderY, validation_ratio):
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
 
-def progress_eval(mri_input, mri_output, pet_input, model, epochs, img_num, save_name):
+def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_num, save_name):
     
     for idx in range(img_num):
 
