@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet04"
+para_name = "ynet05"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -39,9 +39,11 @@ train_para ={
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
     "save_per_epochs" : 1000,
-    "jpgprogressfile_name" : 'progress_'+para_name,
+    "eval_per_epochs" : 1000,
+    "eval_img_num" : 4,
+    "jpgprogressfile_name" : para_name,
     "batch_size" : 2, # should be smallish. 1-10
-    "num_epochs" : 25, # should train for at least 100-200 in total
+    "num_epochs" : 5, # should train for at least 100-200 in total
     "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
     "load_weights" : False, # load trained weights for resuming training
@@ -219,6 +221,14 @@ def train():
             print("Checkpoints saved for epochs ", n_epochs+1)
         if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
             break
+        if n_epochs % train_para["eval_per_epochs"] == 0:
+            progress_eval(mri_input = batch_X,
+                          mri_output = batch_Y,
+                          pet_input = batch_Z,
+                          model = model,
+                          epochs = n_epochs,
+                          img_num = train_para["eval_img_num"],
+                          save_name = train_para["jpgprogressfile_name"])
         n_epochs += 1
 
 
@@ -340,6 +350,58 @@ def split_dataset(folderX, folderY, validation_ratio):
         os.system(cmdY)
 
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
+
+
+def progress_eval(mri_input, mri_output, pet_input, model, epochs, img_num, save_name):
+    
+    for idx in range(img_num):
+
+        mri_eval = model([mri_input, pet_input, np.ones((1, )), np.zeros((1, ))])
+        mri_loss = loss_fn(mri_output, mri_eval)
+        pet_eval = model([mri_input, pet_input, np.zeros((1, )), np.ones((1, ))])
+        pet_gt = np.expand_dims(pet_input[:, :, :, train_para["channel_Z"]//2], axis=3)
+        pet_loss = loss_fn(pet_gt, pet_eval)
+
+        n_batch_mri = mri_input.shape[0]
+        n_slice_mri = mri_input.shape[3]
+        n_batch_pet = pet_input.shape[0]
+        n_slice_pet = pet_input.shape[3]
+        img_mri_input = np.squeeze(mri_input[n_batch_mri//2, :, :, n_slice_mri//2])
+        img_mri_output = np.squeeze(mri_output[n_batch_mri//2, :, :, n_slice_mri//2])
+        img_mri_eval = np.squeeze(mri_eval[mri_eval.shape[0]//2, :, :, mri_eval.shape[3]//2])
+        img_pet_input = np.squeeze(pet_input[n_batch_pet//2, :, :, n_slice_pet//2])
+        img_pet_eval = np.squeeze(pet_eval[pet_eval.shape[0]//2, :, :, pet_eval.shape[3]//2])
+
+        plt.figure(figsize=(16, 6), dpi=300)
+        plt.subplot(2, 3, 1)
+        plt.imshow(np.rot90(img_mri_input),cmap='gray')
+        plt.axis('off')
+        plt.title('mri_input')
+
+        plt.subplot(2, 3, 2)
+        plt.imshow(np.rot90(img_mri_eval),cmap='gray')
+        plt.axis('off')
+        plt.title('mri_eval')
+
+        plt.subplot(2, 3, 3)
+        plt.imshow(np.rot90(img_mri_output),cmap='gray')
+        plt.axis('off')
+        plt.title('mri_output')
+
+        plt.subplot(2, 3, 4)
+        plt.imshow(np.rot90(img_pet_input),cmap='gray')
+        plt.axis('off')
+        plt.title('pet_input')
+
+        plt.subplot(2, 3, 5)
+        plt.imshow(np.rot90(img_pet_eval),cmap='gray')
+        plt.axis('off')
+        plt.title('pet_eval')
+
+        plt.title("mri_loss: "+mri_loss+" || pet_loss: "+pet_loss)
+        plt.savefig('progress_image_{0}_{1:05d}_samples_{1:02d}.jpg'.format(save_name, epochs+1, idx+1))
+
+
 
 
 def progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV):
