@@ -40,6 +40,7 @@ train_para ={
     "save_folder" : './achives/',
     "save_per_epochs" : 1000,
     "eval_per_epochs" : 1000,
+    "eval_num_img" : 4,
     "jpgprogressfile_name" : para_name,
     "batch_size" : 2, # should be smallish. 1-10
     "num_epochs" : 5, # should train for at least 100-200 in total
@@ -151,96 +152,90 @@ def train():
 
     loss_fn = loss
     optimizer = Adam(lr=1e-4)
-    n_epochs = 0
     loss_mri = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_MRI"]))
     loss_pet = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_PET"]))
 
-    # Iterate over the batches of a dataset.
-    for batch_X, batch_Y, batch_Z in generatorT:
+    for idx_epochs in range(train_para["steps_per_epoch"] * train_para["num_epochs"] + 1)
 
         print('-'*50)
-        print("Epochs: ", n_epochs)
-        print(np.mean(batch_X))
-        print(np.mean(batch_Y))
-        print(np.mean(batch_Z))
+        print("Epochs: ", idx_epochs)
 
-        # train MRI
-        model = freeze_phase(model, phase="MRI")
-        model.compile(optimizer=optimizer,loss=loss_fn,
-                      metrics=[mean_squared_error,mean_absolute_error])
         for idx in range(train_para["epoch_per_MRI"]):
-            # Open a GradientTape.
-            with tensorflow.GradientTape() as tape:
-                # Forward pass.
-                predictions = model([batch_X, batch_Z, 
-                                     np.ones((1, )), np.zeros((1, ))])
-                # Compute the loss value for this batch.
-                loss_value = loss_fn(batch_Y, predictions)
-                loss_idx_mri = n_epochs*train_para["epoch_per_MRI"]+idx
-                # print(loss_idx_mri)
-                loss_mri[loss_idx_mri] = np.mean(loss_value)
-                print("Phase MRI loss: ", np.mean(loss_value))
 
-            
-            # Get gradients of loss wrt the *trainable* weights.
-            gradients = tape.gradient(loss_value, model.trainable_weights)
-            # Update the weights of the model.
-            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            # train MRI
+            model = freeze_phase(model, phase="MRI")
+            model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-        # train PET
-        model = freeze_phase(model, phase="PET")
-        model.compile(optimizer=optimizer,loss=loss_fn,
-                      metrics=[mean_squared_error,mean_absolute_error])
+            for batch_X, batch_Y, batch_Z in generatorT:
 
+                print("MRI Phase:")
+                print(np.mean(batch_X))
+                print(np.mean(batch_Y))
+                print(np.mean(batch_Z))
+
+                # Open a GradientTape.
+                with tensorflow.GradientTape() as tape:
+                    # Forward pass.
+                    predictions = model([batch_X, batch_Z, 
+                                         np.ones((1, )), np.zeros((1, ))])
+                    # Compute the loss value for this batch.
+                    loss_value = loss_fn(batch_Y, predictions)
+                    loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx
+                    # print(loss_idx_mri)
+                    loss_mri[loss_idx_mri] = np.mean(loss_value)
+                    print("Phase MRI loss: ", np.mean(loss_value))
+
+                # Get gradients of loss wrt the *trainable* weights.
+                gradients = tape.gradient(loss_value, model.trainable_weights)
+                # Update the weights of the model.
+                optimizer.apply_gradients(zip(gradients, model.trainable_weights))
 
         for idx in range(train_para["epoch_per_PET"]):
 
-            # Open a GradientTape.
-            with tensorflow.GradientTape() as tape:
-                # Forward pass.
-                predictions = model([batch_X, batch_Z,
-                                     np.zeros((1, )), np.ones((1, ))])
-                # Compute the loss value for this batch.
-                gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
-                loss_value = loss_fn(gt_Z, predictions)
-                loss_idx_pet = n_epochs*train_para["epoch_per_MRI"]+idx
-                # print(loss_idx_pet)
-                loss_pet[loss_idx_pet] = np.mean(loss_value)
-                print("Phase PET loss: ", np.mean(loss_value))
+            # train PET
+            model = freeze_phase(model, phase="PET")
+            model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-            
-            # Get gradients of loss wrt the *trainable* weights.
-            gradients = tape.gradient(loss_value, model.trainable_weights)
-            # Update the weights of the model.
-            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            # Iterate over the batches of a dataset.
+            for batch_X, batch_Y, batch_Z in generatorT:
 
-        if n_epochs % train_para["save_per_epochs"] == 0:
+                print("PET Phase:")
+                print(np.mean(batch_X))
+                print(np.mean(batch_Y))
+                print(np.mean(batch_Z))
+
+                # Open a GradientTape.
+                with tensorflow.GradientTape() as tape:
+                    # Forward pass.
+                    predictions = model([batch_X, batch_Z,
+                                         np.zeros((1, )), np.ones((1, ))])
+                    # Compute the loss value for this batch.
+                    gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
+                    loss_value = loss_fn(gt_Z, predictions)
+                    loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx
+                    # print(loss_idx_pet)
+                    loss_pet[loss_idx_pet] = np.mean(loss_value)
+                    print("Phase PET loss: ", np.mean(loss_value))
+
+                
+                # Get gradients of loss wrt the *trainable* weights.
+                gradients = tape.gradient(loss_value, model.trainable_weights)
+                # Update the weights of the model.
+                optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+
+        if idx_epochs % train_para["save_per_epochs"] == 0:
             model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
             model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
             np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_mri.npy", loss_mri)
             np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_pet.npy", loss_pet)
-            print("Checkpoints saved for epochs ", n_epochs+1)
-        if n_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
+            print("Checkpoints saved for epochs ", idx_epochs+1)
+        if idx_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
             break
-        if n_epochs % train_para["eval_per_epochs"] == 0:
-            progress_eval(mri_input = batch_X,
-                          mri_output = batch_Y,
-                          pet_input = batch_Z,
-                          model = model,
-                          loss_fn = loss_fn,
-                          epochs = n_epochs,
-                          img_num = train_para["batch_size"],
-                          save_name = train_para["jpgprogressfile_name"])
-        n_epochs += 1
+        if idx_epochs % train_para["eval_per_epochs"] == 0:
+            progress_eval(generatorT=generatorT, model=model, loss_fn=loss_fn,
+                          epochs=idx_epochs, img_num = train_para["eval_num_img"],
+                          save_name = train_para["jpgprogressfile_name"]):
 
-
-    # model.fit(generatorT, 
-    #           steps_per_epoch=train_para["steps_per_epoch"],
-    #           epochs=train_para["num_epochs"],
-    #           initial_epoch=train_para["initial_epoch"],
-    #           validation_data=generatorV,
-    #           validation_steps=100,
-    #           callbacks=[history, model_checkpoint] ) # , display_progress
     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
     dataset_go_back(folder_list, sub_folder_list)
@@ -354,57 +349,68 @@ def split_dataset(folderX, folderY, validation_ratio):
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
 
-def progress_eval(mri_input, mri_output, pet_input, model, loss_fn, epochs, img_num, save_name):
+def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
     
-    for idx in range(img_num):
+    idx_eval = 1
 
-        mri_eval = model([mri_input, pet_input, np.ones((1, )), np.zeros((1, ))])
-        mri_loss = loss_fn(mri_output, mri_eval)
-        pet_eval = model([mri_input, pet_input, np.zeros((1, )), np.ones((1, ))])
-        pet_gt = np.expand_dims(pet_input[:, :, :, train_para["channel_Z"]//2], axis=3)
-        pet_loss = loss_fn(pet_gt, pet_eval)
+    for idx_gen in range(img_num):
 
-        # print("mri_input", mri_input.shape)
-        # print("mri_output", mri_output.shape)
-        # print("mri_eval", mri_eval.shape)
-        # print("pet_input", pet_input.shape)
-        # print("pet_eval", pet_eval.shape)
+        for batch_X, batch_Y, batch_Z in generatorT:
+            mri_input = batch_X
+            mri_output = batch_Y
+            pet_input = batch_Z
+            n_slice = mri_input.shape[0]
 
-        img_mri_input = np.squeeze(mri_input[idx, :, :, int(mri_input.shape[3]//2)])
-        img_mri_output = np.squeeze(mri_output[idx, :, :, int(mri_output.shape[3]//2)])
-        img_mri_eval = np.squeeze(mri_eval[idx, :, :, int(mri_eval.shape[3]//2)])
-        img_pet_input = np.squeeze(pet_input[idx, :, :, int(pet_input.shape[3]//2)])
-        img_pet_eval = np.squeeze(pet_eval[idx, :, :, int(pet_eval.shape[3]//2)])
+            for idx in range(n_slice):
 
-        plt.figure(figsize=(16, 6), dpi=300)
-        plt.subplot(2, 3, 1)
-        plt.imshow(np.rot90(img_mri_input),cmap='gray')
-        plt.axis('off')
-        plt.title('mri_input')
+                mri_eval = model([mri_input, pet_input, np.ones((1, )), np.zeros((1, ))])
+                mri_loss = loss_fn(mri_output, mri_eval)
+                pet_eval = model([mri_input, pet_input, np.zeros((1, )), np.ones((1, ))])
+                pet_gt = np.expand_dims(pet_input[:, :, :, train_para["channel_Z"]//2], axis=3)
+                pet_loss = loss_fn(pet_gt, pet_eval)
 
-        plt.subplot(2, 3, 2)
-        plt.imshow(np.rot90(img_mri_eval),cmap='gray')
-        plt.axis('off')
-        plt.title('mri_eval')
+                # print("mri_input", mri_input.shape)
+                # print("mri_output", mri_output.shape)
+                # print("mri_eval", mri_eval.shape)
+                # print("pet_input", pet_input.shape)
+                # print("pet_eval", pet_eval.shape)
 
-        plt.subplot(2, 3, 3)
-        plt.imshow(np.rot90(img_mri_output),cmap='gray')
-        plt.axis('off')
-        plt.title('mri_output')
+                img_mri_input = np.squeeze(mri_input[idx, :, :, int(mri_input.shape[3]//2)])
+                img_mri_output = np.squeeze(mri_output[idx, :, :, int(mri_output.shape[3]//2)])
+                img_mri_eval = np.squeeze(mri_eval[idx, :, :, int(mri_eval.shape[3]//2)])
+                img_pet_input = np.squeeze(pet_input[idx, :, :, int(pet_input.shape[3]//2)])
+                img_pet_eval = np.squeeze(pet_eval[idx, :, :, int(pet_eval.shape[3]//2)])
 
-        plt.subplot(2, 3, 4)
-        plt.imshow(np.rot90(img_pet_input),cmap='gray')
-        plt.axis('off')
-        plt.title('pet_input')
+                plt.figure(figsize=(16, 6), dpi=300)
+                plt.subplot(2, 3, 1)
+                plt.imshow(np.rot90(img_mri_input),cmap='gray')
+                plt.axis('off')
+                plt.title('mri_input')
 
-        plt.subplot(2, 3, 5)
-        plt.imshow(np.rot90(img_pet_eval),cmap='gray')
-        plt.axis('off')
-        plt.title('pet_eval')
+                plt.subplot(2, 3, 2)
+                plt.imshow(np.rot90(img_mri_eval),cmap='gray')
+                plt.axis('off')
+                plt.title('mri_eval')
 
-        plt.title("MSR:   mri_loss: "+str(np.mean(mri_loss))+" || pet_loss: "+str(np.mean(pet_loss)))
-        plt.savefig('progress_image_{0}_{1:05d}_samples_{1:02d}.jpg'.format(save_name, epochs+1, idx+1))
+                plt.subplot(2, 3, 3)
+                plt.imshow(np.rot90(img_mri_output),cmap='gray')
+                plt.axis('off')
+                plt.title('mri_output')
 
+                plt.subplot(2, 3, 4)
+                plt.imshow(np.rot90(img_pet_input),cmap='gray')
+                plt.axis('off')
+                plt.title('pet_input')
+
+                plt.subplot(2, 3, 5)
+                plt.imshow(np.rot90(img_pet_eval),cmap='gray')
+                plt.axis('off')
+                plt.title('pet_eval')
+
+                plt.title("MSR:   mri_loss: "+str(np.mean(mri_loss))+" || pet_loss: "+str(np.mean(pet_loss)))
+                plt.savefig('progress_image_{0}_e{1:6d}_samples_{1:02d}.jpg'.format(save_name, epochs, idx_eval))
+
+                idx_eval += 1
 
 
 
