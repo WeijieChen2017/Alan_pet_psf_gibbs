@@ -179,7 +179,7 @@ def train():
                                      np.ones((1, )), np.zeros((1, ))])
                 # Compute the loss value for this batch.
                 loss_value = loss_fn(batch_Y, predictions)
-                loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx
+                loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx_eM
                 # print(loss_idx_mri)
                 loss_mri[loss_idx_mri] = np.mean(loss_value)
                 print("Phase MRI loss: ", np.mean(loss_value))
@@ -214,7 +214,7 @@ def train():
                 # Compute the loss value for this batch.
                 gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
                 loss_value = loss_fn(gt_Z, predictions)
-                loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx
+                loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx_eP
                 # print(loss_idx_pet)
                 loss_pet[loss_idx_pet] = np.mean(loss_value)
                 print("Phase PET loss: ", np.mean(loss_value))
