@@ -238,7 +238,7 @@ def train():
         if idx_epochs % train_para["eval_per_epochs"] == 0:
             print("Save eval images.")
             progress_eval(generatorT=generatorT, model=model, loss_fn=loss_fn,
-                          epochs=idx_epochs, img_num = train_para["eval_num_img"],
+                          epochs=idx_epochs+1, img_num = train_para["eval_num_img"],
                           save_name = train_para["jpgprogressfile_name"])
         if idx_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
             break
@@ -416,8 +416,8 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
 
             plt.title("MSR:   MRI_loss: "+str(np.mean(mri_loss))+" || PET_loss: "+str(np.mean(pet_loss)))
             print(idx_eval)
-            plt.savefig("progress_image_{0}_e{1:06d}_samples_{1:02d}.jpg".format(save_name, epochs, idx_eval))
-            print("progress_image_{0}_e{1:06d}_samples_{1:02d}.jpg".format(save_name, epochs, idx_eval))
+            plt.savefig("progress_image_{0}_e{:06d}_samples_{:02d}.jpg".format(save_name, epochs, idx_eval))
+            print("progress_image_{0}_e{:06d}_samples_{:02d}.jpg".format(save_name, epochs, idx_eval))
             plt.close()
 
             idx_eval += 1
