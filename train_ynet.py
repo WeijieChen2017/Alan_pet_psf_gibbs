@@ -234,7 +234,7 @@ def train():
         if idx_epochs % train_para["eval_per_epochs"] == 0:
             progress_eval(generatorT=generatorT, model=model, loss_fn=loss_fn,
                           epochs=idx_epochs, img_num = train_para["eval_num_img"],
-                          save_name = train_para["jpgprogressfile_name"]):
+                          save_name = train_para["jpgprogressfile_name"])
 
     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
