@@ -415,6 +415,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
 
                 plt.title("MSR:   mri_loss: "+str(np.mean(mri_loss))+" || pet_loss: "+str(np.mean(pet_loss)))
                 plt.savefig('progress_image_{0}_e{1:6d}_samples_{1:02d}.jpg'.format(save_name, epochs, idx_eval))
+                plt.close('all')
 
                 idx_eval += 1
 
