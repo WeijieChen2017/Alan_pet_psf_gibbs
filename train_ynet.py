@@ -29,7 +29,7 @@ train_para ={
     "start_ch" : 64,
     "depth" : 3,
     "epoch_per_MRI": 1,
-    "epoch_per_PET": 10,
+    "epoch_per_PET": 5,
     "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'BRATS_GIBBS',
@@ -158,10 +158,10 @@ def train():
     for idx_epochs in range(train_para["steps_per_epoch"] * train_para["num_epochs"] + 1):
 
         print('-'*50)
-        print("Epochs: ", idx_epochs)
+        print("Epochs: ", idx_epochs+1)
 
         # train MRI
-        idx_eM = 0
+        idx_eM = 1
         model = freeze_phase(model, phase="MRI")
         model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
@@ -194,7 +194,7 @@ def train():
                 idx_eM += 1
 
         # train PET
-        idx_eP = 0
+        idx_eP = 1
         model = freeze_phase(model, phase="PET")
         model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
@@ -359,7 +359,7 @@ def split_dataset(folderX, folderY, validation_ratio):
 def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
     
     idx_eval = 1
-    idx_gen = 0
+    idx_gen = 1
 
     for batch_X, batch_Y, batch_Z in generatorT:
         mri_input = batch_X
@@ -368,7 +368,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
         n_slice = mri_input.shape[0]
 
         for idx in range(n_slice):
-
+            print("&"*6, "eval", str(idx_eval))
             mri_eval = model([mri_input, pet_input, np.ones((1, )), np.zeros((1, ))])
             mri_loss = loss_fn(mri_output, mri_eval)
             pet_eval = model([mri_input, pet_input, np.zeros((1, )), np.ones((1, ))])
