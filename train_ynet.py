@@ -368,6 +368,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
         n_slice = mri_input.shape[0]
 
         for idx in range(n_slice):
+
             print("&"*6, "eval", str(idx_eval))
             mri_eval = model([mri_input, pet_input, np.ones((1, )), np.zeros((1, ))])
             mri_loss = loss_fn(mri_output, mri_eval)
@@ -387,7 +388,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
             img_pet_input = np.squeeze(pet_input[idx, :, :, int(pet_input.shape[3]//2)])
             img_pet_eval = np.squeeze(pet_eval[idx, :, :, int(pet_eval.shape[3]//2)])
 
-            plt.figure(figsize=(16, 6), dpi=300)
+            plt.figure(figsize=(12, 6), dpi=300)
             plt.subplot(2, 3, 1)
             plt.imshow(np.rot90(img_mri_input),cmap='gray')
             plt.axis('off')
@@ -415,6 +416,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
 
             plt.title("MSR:   MRI_loss: "+str(np.mean(mri_loss))+" || PET_loss: "+str(np.mean(pet_loss)))
             plt.savefig("progress_image_{0}_e{1:06d}_samples_{1:02d}.jpg".format(save_name, epochs, idx_eval))
+            print("progress_image_{0}_e{1:06d}_samples_{1:02d}.jpg".format(save_name, epochs, idx_eval))
             plt.close()
 
             idx_eval += 1
