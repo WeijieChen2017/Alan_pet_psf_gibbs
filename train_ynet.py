@@ -160,68 +160,74 @@ def train():
         print('-'*50)
         print("Epochs: ", idx_epochs)
 
-        for idx in range(train_para["epoch_per_MRI"]):
+        # train MRI
+        idx_eM = 0
+        model = freeze_phase(model, phase="MRI")
+        model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-            # train MRI
-            model = freeze_phase(model, phase="MRI")
-            model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
+        for batch_X, batch_Y, batch_Z in generatorT:
 
-            for batch_X, batch_Y, batch_Z in generatorT:
+            print("#"*6, idx, "MRI Phase:")
+            print(np.mean(batch_X))
+            print(np.mean(batch_Y))
+            print(np.mean(batch_Z))
 
-                print("MRI Phase:")
-                print(np.mean(batch_X))
-                print(np.mean(batch_Y))
-                print(np.mean(batch_Z))
+            # Open a GradientTape.
+            with tensorflow.GradientTape() as tape:
+                # Forward pass.
+                predictions = model([batch_X, batch_Z, 
+                                     np.ones((1, )), np.zeros((1, ))])
+                # Compute the loss value for this batch.
+                loss_value = loss_fn(batch_Y, predictions)
+                loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx
+                # print(loss_idx_mri)
+                loss_mri[loss_idx_mri] = np.mean(loss_value)
+                print("Phase MRI loss: ", np.mean(loss_value))
 
-                # Open a GradientTape.
-                with tensorflow.GradientTape() as tape:
-                    # Forward pass.
-                    predictions = model([batch_X, batch_Z, 
-                                         np.ones((1, )), np.zeros((1, ))])
-                    # Compute the loss value for this batch.
-                    loss_value = loss_fn(batch_Y, predictions)
-                    loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx
-                    # print(loss_idx_mri)
-                    loss_mri[loss_idx_mri] = np.mean(loss_value)
-                    print("Phase MRI loss: ", np.mean(loss_value))
+            # Get gradients of loss wrt the *trainable* weights.
+            gradients = tape.gradient(loss_value, model.trainable_weights)
+            # Update the weights of the model.
+            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            if idx_eM >= train_para["epoch_per_MRI"]:
+                break
+            else:
+                idx_eM += 1
 
-                # Get gradients of loss wrt the *trainable* weights.
-                gradients = tape.gradient(loss_value, model.trainable_weights)
-                # Update the weights of the model.
-                optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+        # train PET
+        idx_eP = 0
+        model = freeze_phase(model, phase="PET")
+        model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-        for idx in range(train_para["epoch_per_PET"]):
+        # Iterate over the batches of a dataset.
+        for batch_X, batch_Y, batch_Z in generatorT:
 
-            # train PET
-            model = freeze_phase(model, phase="PET")
-            model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
+            print("@"*6, idx, "PET Phase:")
+            print(np.mean(batch_X))
+            print(np.mean(batch_Y))
+            print(np.mean(batch_Z))
 
-            # Iterate over the batches of a dataset.
-            for batch_X, batch_Y, batch_Z in generatorT:
+            # Open a GradientTape.
+            with tensorflow.GradientTape() as tape:
+                # Forward pass.
+                predictions = model([batch_X, batch_Z,
+                                     np.zeros((1, )), np.ones((1, ))])
+                # Compute the loss value for this batch.
+                gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
+                loss_value = loss_fn(gt_Z, predictions)
+                loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx
+                # print(loss_idx_pet)
+                loss_pet[loss_idx_pet] = np.mean(loss_value)
+                print("Phase PET loss: ", np.mean(loss_value))
 
-                print("PET Phase:")
-                print(np.mean(batch_X))
-                print(np.mean(batch_Y))
-                print(np.mean(batch_Z))
-
-                # Open a GradientTape.
-                with tensorflow.GradientTape() as tape:
-                    # Forward pass.
-                    predictions = model([batch_X, batch_Z,
-                                         np.zeros((1, )), np.ones((1, ))])
-                    # Compute the loss value for this batch.
-                    gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
-                    loss_value = loss_fn(gt_Z, predictions)
-                    loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx
-                    # print(loss_idx_pet)
-                    loss_pet[loss_idx_pet] = np.mean(loss_value)
-                    print("Phase PET loss: ", np.mean(loss_value))
-
-                
-                # Get gradients of loss wrt the *trainable* weights.
-                gradients = tape.gradient(loss_value, model.trainable_weights)
-                # Update the weights of the model.
-                optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            
+            # Get gradients of loss wrt the *trainable* weights.
+            gradients = tape.gradient(loss_value, model.trainable_weights)
+            # Update the weights of the model.
+            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            if idx_eP >= train_para["epoch_per_PET"]:
+                break
+            else:
+                idx_eP += 1
 
         if idx_epochs % train_para["save_per_epochs"] == 0:
             model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
