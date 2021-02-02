@@ -155,7 +155,7 @@ def train():
     loss_mri = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_MRI"]))
     loss_pet = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]*train_para["epoch_per_PET"]))
 
-    for idx_epochs in range(train_para["steps_per_epoch"] * train_para["num_epochs"] + 1)
+    for idx_epochs in range(train_para["steps_per_epoch"] * train_para["num_epochs"] + 1):
 
         print('-'*50)
         print("Epochs: ", idx_epochs)
