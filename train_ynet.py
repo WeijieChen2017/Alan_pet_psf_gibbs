@@ -420,7 +420,7 @@ def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
 
         if idx_gen >= img_num:
             break
-        else
+        else:
             idx_gen += 1
 
 
