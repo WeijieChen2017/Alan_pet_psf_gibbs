@@ -167,7 +167,7 @@ def train():
 
         for batch_X, batch_Y, batch_Z in generatorT:
 
-            print("#"*6, idx, "MRI Phase:")
+            print("#"*6, idx_eM, "MRI Phase:")
             print(np.mean(batch_X))
             print(np.mean(batch_Y))
             print(np.mean(batch_Z))
@@ -201,7 +201,7 @@ def train():
         # Iterate over the batches of a dataset.
         for batch_X, batch_Y, batch_Z in generatorT:
 
-            print("@"*6, idx, "PET Phase:")
+            print("@"*6, idx_eP, "PET Phase:")
             print(np.mean(batch_X))
             print(np.mean(batch_Y))
             print(np.mean(batch_Z))
