@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet05"
+para_name = "ynet06"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
@@ -27,12 +27,12 @@ train_para ={
     "channel_Y" : 1,
     "channel_Z" : 5,
     "start_ch" : 64,
-    "depth" : 3,
+    "depth" : 2,
     "epoch_per_MRI": 1,
     "epoch_per_PET": 5,
     "validation_split" : 0.2,
     "loss" : "l2",
-    "x_data_folder" : 'BRATS_GIBBS',
+    "x_data_folder" : 'hurley',
     "y_data_folder" : 'BRATS_F3',
     "z_data_folder" : 'PET_RSZP',
     "weightfile_name" : 'weights_'+para_name+'.h5',
@@ -109,14 +109,15 @@ def train():
     folderX = "./data_train/"+train_para["x_data_folder"]
     folderY = "./data_train/"+train_para["y_data_folder"]
     folderZ = "./data_train/"+train_para["z_data_folder"]
-    folder_list = [folderX, folderY]
-    sub_folder_list = split_dataset(folderX=folderX, folderY=folderY, 
-                                    validation_ratio=train_para["validation_split"])
-    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
-    print(train_folderX, train_folderY, valid_folderX, valid_folderY)
+    folder_list = [folderX, folderY, folderZ]
+    sub_folder_list = split_dataset_triple(folderX=folderX, folderY=folderY, folderZ = folderZ,
+                                           validation_ratio=train_para["validation_split"])
+    # [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
+    [train_folderX, train_folderY, train_folderZ, valid_folderX, valid_folderY, valid_folderZ] = sub_folder_list
+    print(sub_folder_list)
 
-    niftiGenT = NiftiGenerator.TripleNiftiGenerator()
-    niftiGenT.initialize(train_folderX, train_folderY, folderZ,
+    niftiGenT = NiftiGenerator.TripleNiftiGenerator_paired()
+    niftiGenT.initialize(train_folderX, train_folderY, train_folderZ,
                          niftiGen_augment_opts, niftiGen_norm_opts)
     generatorT = niftiGenT.generate(img_size=(train_para["img_rows"],train_para["img_cols"]),
                                     Xslice_samples=train_para["channel_X"],
@@ -124,16 +125,13 @@ def train():
                                     Zslice_samples=train_para["channel_Z"],
                                     batch_size=train_para["batch_size"])
 
-    niftiGenV = NiftiGenerator.PairedNiftiGenerator()
-    niftiGenV.initialize(valid_folderX, valid_folderY,
+    niftiGenV = NiftiGenerator.TripleNiftiGenerator_paired()
+    niftiGenV.initialize(valid_folderX, valid_folderY, valid_folderZ,
                          niftiGen_augment_opts, niftiGen_norm_opts )
     generatorV = niftiGenV.generate(img_size=(train_para["img_rows"],train_para["img_cols"]),
                                     Xslice_samples=train_para["channel_X"],
                                     Yslice_samples=train_para["channel_Y"],
                                     batch_size=train_para["batch_size"])
-    # for test_data in generatorV:
-    #     dataX, dataY = test_data
-    #     print(dataX.shape, dataY.shape)
 
     print('-'*50)
     print('Preparing callbacks...')
@@ -237,7 +235,7 @@ def train():
             print("Checkpoints saved for epochs ", idx_epochs+1)
         if idx_epochs % train_para["eval_per_epochs"] == 0:
             print("Save eval images.")
-            progress_eval(generatorT=generatorT, model=model, loss_fn=loss_fn,
+            progress_eval(generator=generatorV, model=model, loss_fn=loss_fn,
                           epochs=idx_epochs+1, img_num = train_para["eval_num_img"],
                           save_name = train_para["jpgprogressfile_name"])
         if idx_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
@@ -296,6 +294,78 @@ def dataset_go_back(folder_list, sub_folder_list):
     for data_path in data_validY_list:
         cmd = "mv "+data_path+" "+folderY
         os.system(cmd)
+
+
+# Split the dataset and move them to the corresponding folder
+def split_dataset_triple(folderX, folderY, folderZ, validation_ratio):
+
+    train_folderX = folderX + "/trainX/"
+    train_folderY = folderY + "/trainY/"
+    train_folderZ = folderZ + "/trainZ/"
+    valid_folderX = folderX + "/validX/"
+    valid_folderY = folderY + "/validY/"
+    valid_folderZ = folderZ + "/validZ/"
+
+    if not os.path.exists(train_folderX):
+        os.makedirs(train_folderX)
+    if not os.path.exists(train_folderY):
+        os.makedirs(train_folderY)
+    if not os.path.exists(train_folderZ):
+        os.makedirs(train_folderZ)
+    if not os.path.exists(valid_folderX):
+        os.makedirs(valid_folderX)
+    if not os.path.exists(valid_folderY):
+        os.makedirs(valid_folderY)
+    if not os.path.exists(valid_folderZ):
+        os.makedirs(valid_folderZ)    
+
+
+    data_path_list = glob.glob(folderX+"/*.nii") + glob.glob(folderX+"/*.nii.gz")
+    data_path_list.sort()
+    data_path_list = np.asarray(data_path_list)
+    np.random.shuffle(data_path_list)
+    data_path_list = list(data_path_list)
+    data_name_list = []
+    for data_path in data_path_list:
+        data_name_list.append(os.path.basename(data_path))
+
+    valid_list = data_name_list[:int(len(data_name_list)*validation_ratio)]
+    valid_list.sort()
+    train_list = list(set(data_name_list) - set(valid_list))
+    train_list.sort()
+
+    print("valid_list: ", valid_list)
+    print('-'*50)
+    print("train_list: ", train_list)
+
+    for valid_name in valid_list:
+        valid_nameX = folderX+"/"+valid_name
+        valid_nameY = folderY+"/"+valid_name
+        valid_nameZ = folderZ+"/"+valid_name
+        cmdX = "mv "+valid_nameX+" "+valid_folderX
+        cmdY = "mv "+valid_nameY+" "+valid_folderY
+        cmdZ = "mv "+valid_nameZ+" "+valid_folderZ
+        # print(cmdX)
+        # print(cmdY)
+        os.system(cmdX)
+        os.system(cmdY)
+        os.system(cmdZ)
+
+    for train_name in train_list:
+        train_nameX = folderX+"/"+train_name
+        train_nameY = folderY+"/"+train_name
+        train_nameZ = folderZ+"/"+train_name
+        cmdX = "mv "+train_nameX+" "+train_folderX
+        cmdY = "mv "+train_nameY+" "+train_folderY
+        cmdZ = "mv "+train_nameZ+" "+train_folderZ
+        # print(cmdX)
+        # print(cmdY)
+        os.system(cmdX)
+        os.system(cmdY)
+        os.system(cmdZ)
+
+    return [train_folderX, train_folderY, train_folderZ, valid_folderX, valid_folderY, valid_folderZ]
+
 
 # Split the dataset and move them to the corresponding folder
 def split_dataset(folderX, folderY, validation_ratio):
@@ -356,12 +426,12 @@ def split_dataset(folderX, folderY, validation_ratio):
     return [train_folderX, train_folderY, valid_folderX, valid_folderY]
 
 
-def progress_eval(generatorT, model, loss_fn, epochs, img_num, save_name):
+def progress_eval(generator, model, loss_fn, epochs, img_num, save_name):
     
     idx_eval = 1
     idx_gen = 1
 
-    for batch_X, batch_Y, batch_Z in generatorT:
+    for batch_X, batch_Y, batch_Z in generator:
         mri_input = batch_X
         mri_output = batch_Y
         pet_input = batch_Z

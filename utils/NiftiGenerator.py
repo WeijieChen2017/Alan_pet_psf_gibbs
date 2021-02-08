@@ -781,3 +781,302 @@ class TripleNiftiGenerator(SingleNiftiGenerator):
                 batch_Z[i,:,:,:] = ZimgSlices
 
             yield (batch_X, batch_Y, batch_Z)
+
+
+# data generator for a paired set of nifti files
+class TripleNiftiGenerator_paired(SingleNiftiGenerator):
+    inputFilesX = []
+    normXready = []
+    normXoffset = []
+    normXscale = []
+
+    inputFilesY = []
+    normYready = []
+    normYoffset = []
+    normYscale = []
+
+    inputFilesZ = []
+    normZready = []
+    normZoffset = []
+    normZscale = []
+
+    def initialize(self, inputX, inputY, inputZ, augOptions=None, normOptions=None):
+
+        # if input is a list, let's just use that
+        # otherwise consider this input as a folder
+        if isinstance( inputX, list ):
+            self.inputFilesX = inputX
+        else:
+            self.inputFilesX = sorted( glob( os.path.join(inputX,'*.nii.gz'),recursive=True) + glob( os.path.join(inputX,'*.nii'),recursive=True) )
+
+        if isinstance( inputY, list ):
+            self.inputFilesY = inputY
+        else:
+            self.inputFilesY = sorted( glob( os.path.join(inputY,'*.nii.gz'),recursive=True) + glob( os.path.join(inputY,'*.nii'),recursive=True) )
+
+        if isinstance( inputZ, list ):
+            self.inputFilesZ = inputZ
+        else:
+            self.inputFilesZ = sorted( glob( os.path.join(inputZ,'*.nii.gz'),recursive=True) + glob( os.path.join(inputZ,'*.nii'),recursive=True) )
+
+        num_Xfiles = len(self.inputFilesX)
+        num_Yfiles = len(self.inputFilesY)
+        num_Zfiles = len(self.inputFilesZ)
+        module_logger.info( '{} datasets were found for X'.format(num_Xfiles) )
+        module_logger.info( '{} datasets were found for Y'.format(num_Yfiles) )
+        module_logger.info( '{} datasets were found for Z'.format(num_Zfiles) )
+
+        if num_Xfiles != num_Yfiles:
+            module_logger.error( 'Fatal Error: Mismatch in number of datasets.' )
+            sys.exit(1)
+
+        if augOptions is None:
+            module_logger.warning( 'No augmentation options were specified.' )
+            self.augOptions = PairedNiftiGenerator.get_default_augOptions()
+        else:
+            self.augOptions = augOptions
+
+        if normOptions is None:
+            module_logger.warning( 'No normalization options were specified.' )
+            self.normOptions = TripleNiftiGenerator.get_default_normOptions()
+        else:
+            self.normOptions = normOptions
+
+        # handle normalization
+        if self.normOptions.normXtype == 'auto'.lower():
+            self.normXready = [False] * num_Xfiles
+            self.normXoffset = [0] * num_Xfiles
+            self.normXscale = [1] * num_Xfiles
+        elif self.normOptions.normXtype == 'fixed'.lower():
+            self.normXready = [True] * num_Xfiles
+            self.normXoffset = [self.normOptions.normXoffset] * num_Xfiles
+            self.normXscale = [self.normOptions.normXscale] * num_Xfiles
+        elif self.normOptions.normXtype == 'function'.lower():
+            self.normXready = [False] * num_Xfiles
+        elif self.normOptions.normXtype == 'none'.lower():
+            self.normXready = [True] * num_Xfiles
+            self.normXoffset = [0] * num_Xfiles
+            self.normXscale = [1] * num_Xfiles
+        else:
+            module_logger.error('Fatal Error: Normalization for X was specified as an unknown value.')
+            sys.exit(1)
+
+        if self.normOptions.normYtype == 'auto'.lower():
+            self.normYready = [False] * num_Yfiles
+            self.normYoffset = [0] * num_Yfiles
+            self.normYscale = [1] * num_Yfiles
+        elif self.normOptions.normYtype == 'fixed'.lower():
+            self.normYready = [True] * num_Yfiles
+            self.normYoffset = [self.normOptions.normYoffset] * num_Yfiles
+            self.normYscale = [self.normOptions.normYscale] * num_Yfiles
+        elif self.normOptions.normYtype == 'function'.lower():
+            self.norYready = [False] * num_Yfiles
+        elif self.normOptions.normYtype == 'none'.lower():
+            self.normYready = [True] * num_Yfiles
+            self.normYoffset = [0] * num_Yfiles
+            self.normYscale = [1] * num_Yfiles
+        else:
+            module_logger.error('Fatal Error: Normalization for Y was specified as an unknown value.')
+            sys.exit(1)
+
+        if self.normOptions.normZtype == 'auto'.lower():
+            self.normZready = [False] * num_Zfiles
+            self.normZoffset = [0] * num_Zfiles
+            self.normZscale = [1] * num_Zfiles
+        elif self.normOptions.normYtype == 'fixed'.lower():
+            self.normZready = [True] * num_Zfiles
+            self.normZoffset = [self.normOptions.normZoffset] * num_Zfiles
+            self.normZscale = [self.normOptions.normZscale] * num_Zfiles
+        elif self.normOptions.normZtype == 'function'.lower():
+            self.norZready = [False] * num_Zfiles
+        elif self.normOptions.normZtype == 'none'.lower():
+            self.normZready = [True] * num_Zfiles
+            self.normZoffset = [0] * num_Zfiles
+            self.normZscale = [1] * num_Zfiles
+        else:
+            module_logger.error('Fatal Error: Normalization for Z was specified as an unknown value.')
+            sys.exit(1)
+
+    def get_default_normOptions():
+        normOptions = types.SimpleNamespace()
+
+        # set normalization options
+        #  type can be 'none', 'auto', 'fixed', 'function'
+        # for none, no normalization is done
+        # for auto, a Z-score normalization is done on the Nifti volume to make mean=0, stdev=1
+        # for fixed, a specified offset and scaling factor is applied (data-offset)/scale
+        # for function, a python function is passed that takes the input data and returns a normalized version
+        normOptions.normXtype = 'none'
+        normOptions.normXoffset = 0
+        normOptions.normXscale = 1
+        normOptions.normXinterp = cv2.INTER_CUBIC
+        normOptions.normXfunction = None
+        # interp can be any of the opencv interpolation types: https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html
+        # cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.LANCZOS4,
+        # cv2.INTER_LINEAR_EXACT, cv2.INTER_NEAREST_EXACT, cv2.INTER_MAX
+
+        normOptions.normYtype = 'none'
+        normOptions.normYoffset = 0
+        normOptions.normYscale = 1
+        normOptions.normYinterp = cv2.INTER_CUBIC
+        normOptions.normYfunction = None
+
+        normOptions.normZtype = 'none'
+        normOptions.normZoffset = 0
+        normOptions.normZscale = 1
+        normOptions.normZinterp = cv2.INTER_CUBIC
+        normOptions.normZfunction = None
+
+        return normOptions
+
+    def generate(self, img_size=(256,256), Xslice_samples=1, Yslice_samples=1, Zslice_samples=1, batch_size=16):
+
+        while True:
+            # create empty variables for this batch
+            batch_X = np.zeros([batch_size,img_size[0],img_size[1],Xslice_samples])
+            batch_Y = np.zeros([batch_size,img_size[0],img_size[1],Yslice_samples])
+            batch_Z = np.zeros([batch_size,img_size[0],img_size[1],Zslice_samples])
+
+            for i in range(batch_size):
+                # get a random subject
+                j = np.random.randint( 0, len(self.inputFilesX) )
+                currImgFileX = self.inputFilesX[j]
+                currImgFileY = self.inputFilesY[j]
+                currImgFileZ = self.inputFilesZ[j]
+
+                # load nifti header
+                module_logger.debug( 'reading files {}, {}, {}'.format(currImgFileX,currImgFileY,currImgFileZ) )
+                Ximg = nib.load( currImgFileX )
+                Yimg = nib.load( currImgFileY )
+                Zimg = nib.load( currImgFileZ )
+
+                XimgShape = Ximg.header.get_data_shape()
+                YimgShape = Yimg.header.get_data_shape()
+                ZimgShape = Zimg.header.get_data_shape()
+
+                if not XimgShape == YimgShape:
+                    module_logger.warning('input data ({} and {}) is not the same size. this may lead to unexpected results or errors!'.format(currImgFileX,currImgFileY))
+ 
+                max_slice = max(Xslice_samples, Yslice_samples)
+                imgshape2 = min(XimgShape[2], YimgShape[2])
+                if max_slice==1:
+                    zX = np.random.randint( 0, imgshape2-1 )
+                elif max_slice==3:
+                    zX = np.random.randint( 1, imgshape2-2 )
+                elif max_slice==5:
+                    zX = np.random.randint( 2, imgshape2-3 )
+                elif max_slice==7:
+                    zX = np.random.randint( 3, imgshape2-4 )
+                elif max_slice==9:
+                    zX = np.random.randint( 4, imgshape2-5 )
+                else:
+                    module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
+                    sys.exit(1) 
+                module_logger.debug( 'sampling range is {}'.format(zX) )
+
+
+                if Zslice_samples==1:
+                    zz = np.random.randint( 0, ZimgShape[2]-1 )
+                elif max_slice==3:
+                    zz = np.random.randint( 1, ZimgShape[2]-2 )
+                elif max_slice==5:
+                    zz = np.random.randint( 2, ZimgShape[2]-3 )
+                elif max_slice==7:
+                    zz = np.random.randint( 3, ZimgShape[2]-4 )
+                elif max_slice==9:
+                    zz = np.random.randint( 4, ZimgShape[2]-5 )
+                else:
+                    module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
+                    sys.exit(1) 
+                module_logger.debug('sampling range is {}'.format(zz))
+
+                # handle input data normalization and sampling
+                if self.normOptions.normXtype == 'function'.lower():
+                    # normalization is performed via a specified function
+                    # get normalized data (and read whole volume)
+                    tmpX = self.normOptions.normXfunction( Ximg.get_fdata() )
+                    # sample data
+                    XimgSlices = tmpX[:,:,zX-Xslice_samples//2:zX+Xslice_samples//2+1]
+                else:
+                    # type is none, auto, or fixed
+                    # prepare normalization
+                    if not self.normXready[j]:
+                        tmpX = Ximg.get_fdata()
+                        self.normXoffset[j] = np.mean( tmpX )
+                        self.normXscale[j] = np.std( tmpX )
+                        self.normXready[j] = True
+                    # sample data
+                    XimgSlices = Ximg.slicer[:,:,zX-Xslice_samples//2:zX+Xslice_samples//2+1].get_fdata()
+                    # do normalization
+                    XimgSlices = (XimgSlices - self.normXoffset[j]) / self.normXscale[j]
+
+                if self.normOptions.normYtype == 'function'.lower():
+                    # normalization is performed via a specified function
+                    # get normalized data (and read whole volume)
+                    tmpY = self.normOptions.normYfunction( Yimg.get_fdata() )
+                    # sample data
+                    YimgSlices = tmpY[:,:,zX-Yslice_samples//2:zX+Yslice_samples//2+1]
+                else:
+                    # type is none, auto, or fixed
+                    # prepare normalization                    
+                    if not self.normYready[j]:
+                        tmpY = Yimg.get_fdata()
+                        self.normYoffset[j] = np.mean( tmpY )
+                        self.normYscale[j] = np.std( tmpY )
+                        self.normYready[j] = True
+                    # sample data
+                    YimgSlices = Yimg.slicer[:,:,zX-Yslice_samples//2:zX+Yslice_samples//2+1].get_fdata()
+                    # do normalization
+                    YimgSlices = (YimgSlices - self.normYoffset[j]) / self.normYscale[j]
+
+                # handle input data normalization and sampling
+                if self.normOptions.normZtype == 'function'.lower():
+                    # normalization is performed via a specified function
+                    # get normalized data (and read whole volume)
+                    tmpZ = self.normOptions.normZfunction( Zimg.get_fdata() )
+                    # sample data
+                    ZimgSlices = tmpZ[:,:,zz-Zslice_samples//2:zz+Zslice_samples//2+1]
+                else:
+                    # type is none, auto, or fixed
+                    # prepare normalization
+                    if not self.normZready[jz]:
+                        tmpZ = Zimg.get_fdata()
+                        self.normZoffset[jz] = np.mean( tmpZ )
+                        self.normZscale[jz] = np.std( tmpZ )
+                        self.normZready[jz] = True
+                    # sample data
+                    ZimgSlices = Zimg.slicer[:,:,zz-Zslice_samples//2:zz+Zslice_samples//2+1].get_fdata()
+                    # do normalization
+                    ZimgSlices = (ZimgSlices - self.normZoffset[jz]) / self.normZscale[jz]
+
+                # resize to fixed size for model (note img is resized with CUBIC)
+                XimgSlices = cv2.resize( XimgSlices, dsize=(img_size[1],img_size[0]), interpolation = self.normOptions.normXinterp)
+                YimgSlices = cv2.resize( YimgSlices, dsize=(img_size[1],img_size[0]), interpolation = self.normOptions.normYinterp)
+                ZimgSlices = cv2.resize( ZimgSlices, dsize=(img_size[1],img_size[0]), interpolation = self.normOptions.normZinterp)
+
+                # ensure 3D matrix if batch size is equal to 1
+                if XimgSlices.ndim == 2:
+                    XimgSlices = XimgSlices[...,np.newaxis]
+                if YimgSlices.ndim == 2:
+                    YimgSlices = YimgSlices[...,np.newaxis]
+                if ZimgSlices.ndim == 2:
+                    ZimgSlices = ZimgSlices[...,np.newaxis]
+
+                # augmentation here
+                M = self.get_augment_transform()
+                XimgSlices = self.do_augment( XimgSlices, M )
+                YimgSlices = self.do_augment( YimgSlices, M )
+                ZimgSlices = self.do_augment( ZimgSlices, M )
+
+                # if an additional augmentation function is supplied, apply it here
+                if self.augOptions.additionalFunction:
+                    XimgSlices = self.augOptions.additionalFunction( XimgSlices )
+                    YimgSlices = self.augOptions.additionalFunction( YimgSlices )
+                    ZimgSlices = self.augOptions.additionalFunction( ZimgSlices )
+
+                # put into data array for batch for this batch of samples
+                batch_X[i,:,:,:] = XimgSlices
+                batch_Y[i,:,:,:] = YimgSlices
+                batch_Z[i,:,:,:] = ZimgSlices
+
+            yield (batch_X, batch_Y, batch_Z)
