@@ -33,7 +33,7 @@ train_para ={
     "validation_split" : 0.2,
     "loss" : "l2",
     "x_data_folder" : 'MRI_232_F3',
-    "y_data_folder" : 'MIR_232',
+    "y_data_folder" : 'MRI_232',
     "z_data_folder" : 'PET_2x',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
@@ -44,7 +44,7 @@ train_para ={
     "jpgprogressfile_name" : para_name,
     "batch_size" : 2, # should be smallish. 1-10
     "num_epochs" : 5, # should train for at least 100-200 in total
-    "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
+    "steps_per_epoch" : 2400, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
     "load_weights" : False, # load trained weights for resuming training
 }  
