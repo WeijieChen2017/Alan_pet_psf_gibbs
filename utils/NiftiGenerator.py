@@ -975,20 +975,20 @@ class TripleNiftiGenerator_paired(SingleNiftiGenerator):
                 module_logger.debug( 'sampling range is {}'.format(zX) )
 
 
-                if Zslice_samples==1:
-                    zz = np.random.randint( 0, ZimgShape[2]-1 )
-                elif max_slice==3:
-                    zz = np.random.randint( 1, ZimgShape[2]-2 )
-                elif max_slice==5:
-                    zz = np.random.randint( 2, ZimgShape[2]-3 )
-                elif max_slice==7:
-                    zz = np.random.randint( 3, ZimgShape[2]-4 )
-                elif max_slice==9:
-                    zz = np.random.randint( 4, ZimgShape[2]-5 )
-                else:
-                    module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
-                    sys.exit(1) 
-                module_logger.debug('sampling range is {}'.format(zz))
+                # if Zslice_samples==1:
+                #     zz = np.random.randint( 0, ZimgShape[2]-1 )
+                # elif max_slice==3:
+                #     zz = np.random.randint( 1, ZimgShape[2]-2 )
+                # elif max_slice==5:
+                #     zz = np.random.randint( 2, ZimgShape[2]-3 )
+                # elif max_slice==7:
+                #     zz = np.random.randint( 3, ZimgShape[2]-4 )
+                # elif max_slice==9:
+                #     zz = np.random.randint( 4, ZimgShape[2]-5 )
+                # else:
+                #     module_logger.error('Fatal Error: Number of slice samples must be 1, 3, 5, 7, or 9')
+                #     sys.exit(1) 
+                # module_logger.debug('sampling range is {}'.format(zz))
 
                 # handle input data normalization and sampling
                 if self.normOptions.normXtype == 'function'.lower():
@@ -1035,7 +1035,7 @@ class TripleNiftiGenerator_paired(SingleNiftiGenerator):
                     # get normalized data (and read whole volume)
                     tmpZ = self.normOptions.normZfunction( Zimg.get_fdata() )
                     # sample data
-                    ZimgSlices = tmpZ[:,:,zz-Zslice_samples//2:zz+Zslice_samples//2+1]
+                    ZimgSlices = tmpZ[:,:,zX-Zslice_samples//2:zX+Zslice_samples//2+1]
                 else:
                     # type is none, auto, or fixed
                     # prepare normalization
@@ -1045,7 +1045,7 @@ class TripleNiftiGenerator_paired(SingleNiftiGenerator):
                         self.normZscale[j] = np.std( tmpZ )
                         self.normZready[j] = True
                     # sample data
-                    ZimgSlices = Zimg.slicer[:,:,zz-Zslice_samples//2:zz+Zslice_samples//2+1].get_fdata()
+                    ZimgSlices = Zimg.slicer[:,:,zX-Zslice_samples//2:zX+Zslice_samples//2+1].get_fdata()
                     # do normalization
                     ZimgSlices = (ZimgSlices - self.normZoffset[j]) / self.normZscale[j]
 
