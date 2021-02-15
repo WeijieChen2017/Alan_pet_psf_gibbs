@@ -131,6 +131,7 @@ def train():
     generatorV = niftiGenV.generate(img_size=(train_para["img_rows"],train_para["img_cols"]),
                                     Xslice_samples=train_para["channel_X"],
                                     Yslice_samples=train_para["channel_Y"],
+                                    Zslice_samples=train_para["channel_Z"],
                                     batch_size=train_para["batch_size"])
 
     print('-'*50)
