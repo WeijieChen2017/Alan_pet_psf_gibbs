@@ -3,7 +3,7 @@ import glob
 import nibabel as nib
 from nibabel import processing
 
-nii_list = glob.glob("./*.nii")
+nii_list = glob.glob("./*.nii.gz")
 nii_list.sort()
 
 for nii_name in nii_list:
