@@ -18,7 +18,7 @@ for PET_data in PET_list:
     if MRI_data in MRI_list:
         print("Both exist.")
 
-    cmd_PET = ("cp "+PET_data+" ./"+PET_data[24:33]+"_"+PET_name+name_type)
-    cmd_MRI = ("cp "+MRI_data+" ./"+MRI_data[24:33]+"_"+MRI_name+name_type)
+    cmd_PET = ("cp "+PET_data+" ./"+PET_data[23:32]+"_"+PET_name+name_type)
+    cmd_MRI = ("cp "+MRI_data+" ./"+MRI_data[23:32]+"_"+MRI_name+name_type)
     print(cmd_PET)
     print(cmd_MRI)
