@@ -12,7 +12,7 @@ MRI_list.sort()
 PET_list.sort()
 
 for MRI_data in MRI_list:
-	print(MRI_data)
+	print(MRI_data[32:])
 
 for PET_data in PET_list:
-	print(PET_data)
+	print(PET_data[32:])
