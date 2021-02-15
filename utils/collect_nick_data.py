@@ -2,7 +2,7 @@ import glob
 import os
 
 source_path = "/data_local/nick/nifti/"
-MRI_name = "Ax_T1_BRAVO_Stealth_CT"
+MRI_name = "Ax_T1_BRAVO_Stealth"
 PET_name = "PET_MAC_ZTE"
 name_type = ".nii.gz"
 
