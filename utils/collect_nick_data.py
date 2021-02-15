@@ -12,6 +12,7 @@ MRI_list.sort()
 PET_list.sort()
 
 for PET_data in PET_list:
+    print("&"*50)
     print(PET_data)
     MRI_data = PET_data[:33]+MRI_name+name_type
     print(MRI_data)
@@ -22,3 +23,5 @@ for PET_data in PET_list:
     cmd_MRI = ("cp "+MRI_data+" ./sCT_"+MRI_data[29:32]+"_MRI"+name_type)
     print(cmd_PET)
     print(cmd_MRI)
+    os.system(cmd_PET)
+    os.system(cmd_MRI)
