@@ -13,7 +13,7 @@ for idx_str in idx_list:
 	# cmd_5 = "rm -f zeropad+orig.HEAD"
 	cmd_6 = "rm -f pet"+idx_str+"+orig.BRIK"
 	cmd_7 = "rm -f pet"+idx_str+"+orig.HEAD"
-	cmd_8 = "mv p"+idx_str+".nii ./PET_2x/"
+	cmd_8 = "mv pet"+idx_str+".nii ./PET_2x/"
 	# cmd_6 = "mv y"+idx_str+".nii ../inv_RSZP"
 	for cmd in [cmd_1, cmd_3, cmd_6, cmd_7, cmd_8]:
 		print(cmd)
