@@ -17,24 +17,24 @@ from tensorflow.keras.optimizers import Adam
 from models import Ynet
 from utils import NiftiGenerator
 
-para_name = "ynet06"
+para_name = "ynet07"
 # Data to be written  
 train_para ={  
     "para_name" : para_name,
-    "img_rows" : 256, # image is resampled to this size
-    "img_cols" : 256, # image is resampled to this size
+    "img_rows" : 512, # image is resampled to this size
+    "img_cols" : 512, # image is resampled to this size
     "channel_X" : 5,
     "channel_Y" : 1,
     "channel_Z" : 5,
     "start_ch" : 64,
-    "depth" : 2,
+    "depth" : 3,
     "epoch_per_MRI": 1,
     "epoch_per_PET": 5,
     "validation_split" : 0.2,
     "loss" : "l2",
-    "x_data_folder" : 'hurley',
-    "y_data_folder" : 'BRATS_F3',
-    "z_data_folder" : 'PET_RSZP',
+    "x_data_folder" : 'MRI_232_F3',
+    "y_data_folder" : 'MIR_232',
+    "z_data_folder" : 'PET_2x',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
