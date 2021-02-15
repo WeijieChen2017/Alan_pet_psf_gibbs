@@ -1039,15 +1039,15 @@ class TripleNiftiGenerator_paired(SingleNiftiGenerator):
                 else:
                     # type is none, auto, or fixed
                     # prepare normalization
-                    if not self.normZready[jz]:
+                    if not self.normZready[j]:
                         tmpZ = Zimg.get_fdata()
-                        self.normZoffset[jz] = np.mean( tmpZ )
-                        self.normZscale[jz] = np.std( tmpZ )
-                        self.normZready[jz] = True
+                        self.normZoffset[j] = np.mean( tmpZ )
+                        self.normZscale[j] = np.std( tmpZ )
+                        self.normZready[j] = True
                     # sample data
                     ZimgSlices = Zimg.slicer[:,:,zz-Zslice_samples//2:zz+Zslice_samples//2+1].get_fdata()
                     # do normalization
-                    ZimgSlices = (ZimgSlices - self.normZoffset[jz]) / self.normZscale[jz]
+                    ZimgSlices = (ZimgSlices - self.normZoffset[j]) / self.normZscale[j]
 
                 # resize to fixed size for model (note img is resized with CUBIC)
                 XimgSlices = cv2.resize( XimgSlices, dsize=(img_size[1],img_size[0]), interpolation = self.normOptions.normXinterp)
