@@ -9,7 +9,7 @@ for idx_str in idx_list:
 	print(idx_str)
 	name = tag+idx_str
 	# cmd_1 = "3dresample -dxyz 1.172 1.172 1.065 -prefix "+tag+idx_str+" -inset "+tag+idx_str+"_PET.nii.gz -rmode Cu"
-	cmd_1 = "3dresample -prefix "+name+"_resample.nii.gz -master "+name+"_MRI.nii.gz -rmode Cu -input "+name+"_PET.nii.gz"
+	cmd_1 = "3dresample -prefix "+name+"_resample.nii.gz -master "+name+"_MRI.nii.gz -rmode Cu -input "+name+"_PET.nii.gz -bound_type SLAB"
 	# cmd_2 = "3dZeropad -I 17 -S 17 p"+idx_str+"+orig"
 	# cmd_3 = "3dAFNItoNIFTI -prefix "+tag+idx_str+" "+tag+idx_str+"+orig"
 	# cmd_4 = "rm -f zeropad+orig.BRIK"
