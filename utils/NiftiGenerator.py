@@ -957,7 +957,7 @@ class TripleNiftiGenerator_paired(SingleNiftiGenerator):
                 if not XimgShape == YimgShape:
                     module_logger.warning('input data ({} and {}) is not the same size. this may lead to unexpected results or errors!'.format(currImgFileX,currImgFileY))
  
-                max_slice = max(Xslice_samples, Yslice_samples, Zslice1_samples)
+                max_slice = max(Xslice_samples, Yslice_samples, Zslice_samples)
                 imgshape2 = min(XimgShape[2], YimgShape[2], ZimgShape)[2]
                 if max_slice==1:
                     idx_slice = np.random.randint( 0, imgshape2-1 )
