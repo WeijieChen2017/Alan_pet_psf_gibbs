@@ -4,7 +4,7 @@ idx_list = ["001", "002", "005", "010", "019", "041", "046", "053", "057", "058"
 for idx in idx_list:
     print("%"*50)
     name_mri = "sCT_"+idx+"_MRI.nii.gz"
-    name_pet = "sCT_"+idx+"_PET/nii.gz"
+    name_pet = "sCT_"+idx+"_PET.nii.gz"
     name_rs = "sCT_"+idx+"_ants.nii.gz"
     file_mri = ants.image_read(name_mri)
     file_pet = ants.image_read(name_pet)
