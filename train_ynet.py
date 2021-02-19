@@ -34,7 +34,7 @@ train_para ={
     "loss" : "l2",
     "x_data_folder" : 'MRI_232_F3',
     "y_data_folder" : 'MRI_232',
-    "z_data_folder" : 'PET_2x',
+    "z_data_folder" : 'antspy',
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
