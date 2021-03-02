@@ -20,6 +20,6 @@ for idx in range(len(data)):
     xid = data[idx, 0]
     url = data[idx, 2]
     regular_url = url + "?ixid=" + xid + "\&fm=jpg\&fit=crop\&w=512\&h=512\&q=80\&monochrome=808080"
-    cmd = "wget " + regular_url + " -O " + xid + ".jpg"
-    print(idx, xid)
+    cmd = "wget " + regular_url + " -O " + str(idx).zfill(5) + ".jpg"
+    print(str(idx).zfill(5), xid)
     os.system(cmd)
