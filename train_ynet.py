@@ -39,7 +39,7 @@ train_para ={
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
     "save_per_epochs" : 1000,
-    "eval_per_epochs" : 1000,
+    "eval_per_epochs" : 400,
     "eval_num_img" : 4,
     "jpgprogressfile_name" : para_name,
     "batch_size" : 2, # should be smallish. 1-10
