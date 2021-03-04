@@ -46,9 +46,9 @@ cnt = 0
 cnt_k = 1
 
 for idx in range(25000):
-    img_name = os.path.basename(str(idx).zfill(5)+".jpg")
+    img_name = str(idx).zfill(5)+".jpg"
     # 3 channels are the same
-    img_X = np.asarray(Image.open(img_path))[:, :, 0]
+    img_X = np.asarray(Image.open(img_name))[:, :, 0]
     img_Y = k4conv(img_X, k=16)
 
     imgX_25k[:, :, cnt] = img_X
