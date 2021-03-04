@@ -40,26 +40,31 @@ def k4conv(data, k):
     return img_Y
 
 
-imgX_25k = np.zeros((512, 512, 1000))
-imgY_25k = np.zeros((512, 512, 1000))
-cnt = 0
-cnt_k = 1
+# imgX_25k = np.zeros((512, 512, 1000))
+# imgY_25k = np.zeros((512, 512, 1000))
+# cnt = 0
+# cnt_k = 1
 
 for idx in range(25000):
-    img_name = str(idx).zfill(5)+".jpg"
+    img_name = str(idx).zfill(5)
     # 3 channels are the same
-    img_X = np.asarray(Image.open(img_name))[:, :, 0]
-    img_Y = k4conv(img_X, k=16)
+    try:
+        img_X = np.asarray(Image.open(img_name+".jpg"))[:, :, 0]
+        img_Y = k4conv(img_X, k=16)
+    except:
+        print(img_name+".jpg")
+    # imgX_25k[:, :, cnt] = img_X
+    # imgY_25k[:, :, cnt] = img_Y
+    else:
+        np.save(img_name+"_X.npy", img_X)
+        np.save(img_name+"_Y.npy", img_Y)
+        # print(str(idx).zfill(5)+".jpg")
+    # cnt += 1
 
-    imgX_25k[:, :, cnt] = img_X
-    imgY_25k[:, :, cnt] = img_Y
-    print(str(idx).zfill(5)+".jpg")
-    cnt += 1
-
-    if cnt >=1000:
-        np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
-        np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
-        cnt_k += 1
-        cnt = 0
-        print(cnt_k*1000)
+    # if cnt >=1000:
+    #     np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
+    #     np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
+    #     cnt_k += 1
+    #     cnt = 0
+    #     print(cnt_k*1000)
 
