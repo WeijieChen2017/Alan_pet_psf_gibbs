@@ -40,19 +40,26 @@ def k4conv(data, k):
     return img_Y
 
 
-imgX_25k = np.zeros((512, 512, 25000))
-imgY_25k = np.zeros((512, 512, 25000))
+imgX_25k = np.zeros((512, 512, 1000))
+imgY_25k = np.zeros((512, 512, 1000))
+cnt = 0
+cnt_k = 1
 
-for idx in range(100):
+for idx in range(25000):
     img_name = os.path.basename(str(idx).zfill(5)+".jpg")
     # 3 channels are the same
     img_X = np.asarray(Image.open(img_path))[:, :, 0]
     img_Y = k4conv(img_X, k=16)
 
-    imgX_25k[:, :, idx] = img_X
-    imgY_25k[:, :, idx] = img_Y
+    imgX_25k[:, :, cnt] = img_X
+    imgY_25k[:, :, cnt] = img_Y
     print(str(idx).zfill(5)+".jpg")
+    cnt += 1
 
-np.save("imgX_25k.npy", imgX_25k)
-np.save("imgY_25k.npy", imgY_25k)
+    if cnt >=1000:
+        np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
+        np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
+        cnt_k += 1
+        cnt = 0
+        print(cnt_k*1000)
 
