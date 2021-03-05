@@ -43,9 +43,10 @@ def k4conv(data, k):
 imgX_25k = np.zeros((512, 512, 1000), dtype=np.single)
 imgY_25k = np.zeros((512, 512, 1000), dtype=np.single)
 cnt = 0
-cnt_k = 1
+cnt_k = 25
 
-for idx in range(25000):
+for ii in range(1000):
+    idx += 24000
     img_name = str(idx).zfill(5)
     # 3 channels are the same
     try:
@@ -64,7 +65,13 @@ for idx in range(25000):
         if cnt >=1000:
             np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
             np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
-            cnt_k += 1
             cnt = 0
             print(cnt_k*1000)
+            cnt_k += 1
 
+if cnt <999:
+    np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
+    np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
+    cnt = 0
+    print(cnt_k*1000)
+    cnt_k += 1
