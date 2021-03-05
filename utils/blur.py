@@ -46,7 +46,7 @@ cnt = 0
 cnt_k = 25
 
 for ii in range(1000):
-    idx += 24000
+    idx = ii + 24000
     img_name = str(idx).zfill(5)
     # 3 channels are the same
     try:
