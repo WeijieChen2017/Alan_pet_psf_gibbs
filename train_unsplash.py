@@ -24,7 +24,7 @@ train_para ={
     "img_cols" : 512, # image is resampled to this size
     "channel_X" : 1,
     "channel_Y" : 1,
-    "start_ch" : 64,
+    "start_ch" : 16,
     "depth" : 4, 
     "validation_split" : 0.2,
     "loss" : "l2",
@@ -155,6 +155,120 @@ def train():
         # np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
         # np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
         # print("Checkpoints saved for epochs ", idx_epochs+1)
+
+    # print('-'*50)
+    # print('Fitting network...')
+    # print('-'*50)
+    # loss_fn = loss
+    # optimizer = Adam(lr=1e-4)
+    # loss_t = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
+    # loss_v = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
+    # n_train = len(list_t)
+    # model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
+
+    # for idx_epochs in range(train_para["num_epochs"]):
+
+    #     print('-'*50)
+    #     print("Epochs: ", idx_epochs+1)
+    #     print('-'*20)
+    #     random.shuffle(list_t)
+    #     for idx_steps in range(train_para["steps_per_epoch"]):
+    #         print("Steps: ", idx_steps+1)
+    #         print('-'*20)
+    #         print("--Training:")
+    #         step_loss = 0
+    #         for data_pair in list_t:
+    #             path_X = data_pair[0]
+    #             path_Y = data_pair[1]
+
+    #             data_X = np.load(path_X)
+    #             data_Y = np.load(path_Y)
+
+    #             # 512, 512, 1000
+    #             len_batch = train_para["batch_size"]
+    #             batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
+    #             batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
+    #             n_iter = data_X.shape[2] // len_batch
+    #             batch_loss = 0
+    #             for idx_batch in range(n_iter):
+    #                 batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+    #                 batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+
+    #                 # Open a GradientTape.
+    #                 with tensorflow.GradientTape() as tape:
+    #                     # Forward pass.
+    #                     predictions = model([batch_X])
+    #                     # Compute the loss value for this batch.
+    #                     loss_value = loss_fn(batch_Y, predictions)
+    #                     batch_loss += loss_value
+    #                     # print(loss_idx_mri)
+    #                     print("Training loss: ", np.mean(loss_value))
+
+    #                 # Get gradients of loss wrt the *trainable* weights.
+    #                 gradients = tape.gradient(loss_value, model.trainable_weights)
+    #                 # Update the weights of the model.
+    #                 optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+    #             step_loss += batch_loss / n_iter
+    #             print("----", os.path.basename(path_X), step_loss)
+                
+    #         loss_t[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
+            
+    #         print('-'*20)
+    #         print("--Validation:")
+    #         step_loss = 0
+    #         for idx_p, data_pair in enumerate(list_v):
+    #             path_X = data_pair[0]
+    #             path_Y = data_pair[1]
+
+    #             data_X = np.load(path_X)
+    #             data_Y = np.load(path_Y)
+
+    #             # 512, 512, 1000
+    #             len_batch = train_para["batch_size"]
+    #             batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
+    #             batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
+    #             n_iter = data_X.shape[2] // len_batch
+    #             batch_loss = 0
+    #             for idx_batch in range(n_iter):
+    #                 batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+    #                 batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+
+    #                 predictions = model.predict(batch_X)
+    #                 loss_value = loss_fn(batch_Y, predictions)
+    #                 batch_loss += loss_value
+
+    #             step_loss += batch_loss / n_iter
+
+    #             for idx_b in range(len_batch):
+    #                 plt.figure(figsize=(20, 6), dpi=300)
+    #                 plt.subplot(2, 3, 1)
+    #                 plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
+    #                 plt.axis('off')
+    #                 plt.title('input X[0]')
+
+    #                 plt.subplot(2, 3, 2)
+    #                 plt.imshow(np.rot90(np.squeeze(batch_Y[idx_b, :, :, :])),cmap='gray')
+    #                 plt.axis('off')
+    #                 plt.title('target Y[0]')
+
+    #                 plt.subplot(2, 3, 3)
+    #                 plt.imshow(np.rot90(np.squeeze(predictions[idx_b, :, :, :])),cmap='gray')
+    #                 plt.axis('off')
+    #                 plt.title('pred')
+
+    #                 plt.savefig('U_e{1:02d}_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(epoch+1, idx_steps+1, idx_p+1, idx_b+1))
+            
+    #         loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
+
+    #     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+    #     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
+    #     np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
+    #     np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
+    #     print("Checkpoints saved for epochs ", idx_epochs+1)
+
+    # model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+    # model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
+
 
 def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_ratio):
 
