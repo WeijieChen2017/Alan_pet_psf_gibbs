@@ -90,7 +90,7 @@ def train():
     # print('-'*50)
     # history = History()
     model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
-                                       monitor='val_loss', 
+                                       monitor='loss', 
                                        save_best_only=True)
     tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     # display_progress = LambdaCallback(on_epoch_end= lambda epoch,
@@ -121,32 +121,35 @@ def train():
             path_X = data_pair[0]
             path_Y = data_pair[1]
 
-            data_X = np.load(path_X)
-            data_Y = np.load(path_Y)
+            try:
+                data_X = np.load(path_X)
+                data_Y = np.load(path_Y)
+            except:
+                print(path_X, path_Y)
+            else:
+                model.evaluate(x=data_X, y=data_Y, batch_size=train_para["batch_size"])
 
-            model.evaluate(x=data_X, y=data_Y, batch_size=train_para["batch_size"])
+                batch_X[:, :, :, :] = data_X[:train_para["batch_size"], :, :, :]
+                batch_Y[:, :, :, :] = data_Y[:train_para["batch_size"], :, :, :]
 
-            batch_X[:, :, :, :] = data_X[:train_para["batch_size"], :, :, :]
-            batch_Y[:, :, :, :] = data_Y[:train_para["batch_size"], :, :, :]
+                for idx_b in range(train_para["batch_size"]):
+                    plt.figure(figsize=(20, 6), dpi=300)
+                    plt.subplot(2, 3, 1)
+                    plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
+                    plt.axis('off')
+                    plt.title('input X[0]')
 
-            for idx_b in range(train_para["batch_size"]):
-                plt.figure(figsize=(20, 6), dpi=300)
-                plt.subplot(2, 3, 1)
-                plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
-                plt.axis('off')
-                plt.title('input X[0]')
+                    plt.subplot(2, 3, 2)
+                    plt.imshow(np.rot90(np.squeeze(batch_Y[idx_b, :, :, :])),cmap='gray')
+                    plt.axis('off')
+                    plt.title('target Y[0]')
 
-                plt.subplot(2, 3, 2)
-                plt.imshow(np.rot90(np.squeeze(batch_Y[idx_b, :, :, :])),cmap='gray')
-                plt.axis('off')
-                plt.title('target Y[0]')
+                    plt.subplot(2, 3, 3)
+                    plt.imshow(np.rot90(np.squeeze(predictions[idx_b, :, :, :])),cmap='gray')
+                    plt.axis('off')
+                    plt.title('pred')
 
-                plt.subplot(2, 3, 3)
-                plt.imshow(np.rot90(np.squeeze(predictions[idx_b, :, :, :])),cmap='gray')
-                plt.axis('off')
-                plt.title('pred')
-
-                plt.savefig('U_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(idx_s+1, idx_p+1, idx_b+1))
+                    plt.savefig('U_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(idx_s+1, idx_p+1, idx_b+1))
             
             # loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] = loss
 
