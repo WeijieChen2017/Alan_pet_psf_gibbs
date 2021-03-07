@@ -16,7 +16,7 @@ for doc in documents:
         datasets[doc] = pd.concat(subsets, axis=0, ignore_index=True)
 
 data = np.array(datasets['photos'])
-for idx in range(len(data)):
+for idx in range(10000):
     xid = data[idx, 0]
     url = data[idx, 2]
     regular_url = url + "?ixid=" + xid + "\&fm=jpg\&fit=crop\&w=512\&h=512\&q=80\&monochrome=808080"
