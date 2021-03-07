@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import glob
 import json
+import random
 from time import time
 from matplotlib import pyplot as plt
 import numpy as np
@@ -36,7 +37,7 @@ train_para ={
     "jpgprogressfile_name" : 'progress_'+para_name,
     "batch_size" : 8, # should be smallish. 1-10
     "num_epochs" : 25, # should train for at least 100-200 in total
-    "steps_per_epoch" : 20*89, # should be enough to be equal to one whole pass through the dataset
+    "steps_per_epoch" : 10, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
     "load_weights" : False, # load trained weights for resuming training
 }  
@@ -49,6 +50,12 @@ with open("./json/train_para_"+train_para["para_name"]+".json", "w") as outfile:
 def train():
     # set fixed random seed for repeatability
 
+    np.random.seed(813)
+    if train_para["loss"] == "l1":
+        loss = mean_absolute_error
+    if train_para["loss"] == "l2":
+        loss = mean_squared_error
+
     print(train_para)
 
     list_t, list_v = split_dataset_simple(data_prefix_X=train_para["data_prefix_X"],
@@ -57,13 +64,6 @@ def train():
                                           validation_ratio=train_para["validation_split"])
     print("Training:", list_t)
     print("Validation:", list_v)
-    exit()
-
-    np.random.seed(813)
-    if train_para["loss"] == "l1":
-        loss = mean_absolute_error
-    if train_para["loss"] == "l2":
-        loss = mean_squared_error
 
     print('-'*50)
     print('Creating and compiling model...')
@@ -85,53 +85,7 @@ def train():
 
     # optionally load weights
     if train_para["load_weights"]:
-        model.load_weights(train_para["save_folder"]+train_para["weightfile_name"])
-
-
-    # print('-'*50)
-    # print('Setting up NiftiGenerator')
-    # print('-'*50)
-    # niftiGen_augment_opts = NiftiGenerator.PairedNiftiGenerator.get_default_augOptions()
-    # niftiGen_augment_opts.hflips = True
-    # niftiGen_augment_opts.vflips = True
-    # niftiGen_augment_opts.rotations = 15
-    # niftiGen_augment_opts.scalings = 0
-    # niftiGen_augment_opts.shears = 0
-    # niftiGen_augment_opts.translations = 10
-    # print(niftiGen_augment_opts)
-    # niftiGen_norm_opts = NiftiGenerator.PairedNiftiGenerator.get_default_normOptions()
-    # niftiGen_norm_opts.normXtype = 'auto'
-    # niftiGen_norm_opts.normYtype = 'auto'
-    # print(niftiGen_norm_opts)
-
-    # folderX = "./data_train/"+train_para["x_data_folder"]
-    # folderY = "./data_train/"+train_para["y_data_folder"]
-    # folder_list = [folderX, folderY]
-    # sub_folder_list = split_dataset(folderX=folderX, folderY=folderY, 
-    #                                 validation_ratio=train_para["validation_split"])
-    # [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
-    # print(train_folderX, train_folderY, valid_folderX, valid_folderY)
-
-    # niftiGenT = NiftiGenerator.PairedNiftiGenerator()
-    # niftiGenT.initialize(train_folderX, train_folderY,
-    #                      niftiGen_augment_opts, niftiGen_norm_opts)
-    # generatorT = niftiGenT.generate(img_size=(train_para["img_rows"],train_para["img_cols"]),
-    #                                 Xslice_samples=train_para["channel_X"],
-    #                                 Yslice_samples=train_para["channel_Y"],
-    #                                 batch_size=train_para["batch_size"])
-
-    # niftiGenV = NiftiGenerator.PairedNiftiGenerator()
-    # niftiGenV.initialize(valid_folderX, valid_folderY,
-    #                      niftiGen_augment_opts, niftiGen_norm_opts )
-    # generatorV = niftiGenV.generate(img_size=(train_para["img_rows"],train_para["img_cols"]),
-    #                                 Xslice_samples=train_para["channel_X"],
-    #                                 Yslice_samples=train_para["channel_Y"],
-    #                                 batch_size=train_para["batch_size"])
-    # for test_data in generatorV:
-    #     dataX, dataY = test_data
-    #     print(dataX.shape, dataY.shape)
-
-    
+        model.load_weights(train_para["save_folder"]+train_para["weightfile_name"])  
 
     print('-'*50)
     print('Preparing callbacks...')
@@ -147,17 +101,116 @@ def train():
     print('-'*50)
     print('Fitting network...')
     print('-'*50)
-    fig = plt.figure(figsize=(15,5))
-    fig.show(False)
-    model.fit(generatorT, 
-              steps_per_epoch=train_para["steps_per_epoch"],
-              epochs=train_para["num_epochs"],
-              initial_epoch=train_para["initial_epoch"],
-              validation_data=generatorV,
-              validation_steps=100,
-              callbacks=[history, model_checkpoint] ) # , display_progress
+    loss_fn = loss
+    optimizer = Adam(lr=1e-4)
+    loss_t = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
+    loss_v = np.zeros((train_para["num_epochs"]))
+    n_train = len(list_t)
+    model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-    dataset_go_back(folder_list, sub_folder_list)
+    for idx_epochs in range(train_para["num_epochs"])
+
+        print('-'*50)
+        print("Epochs: ", idx_epochs+1)
+        print('-'*20)
+        random.shuffle(list_t)
+        for idx_steps in range(train_para["steps_per_epoch"]):
+            print("Steps: ", idx_steps+1)
+            print('-'*20)
+
+            for data_pair in list_t:
+                path_X = data_pair[0]
+                path_Y = data_pair[1]
+
+                data_X = np.load(path_X)
+                data_Y = np.load(path_Y)
+
+                print(data_X.shape)
+                print(data_Y.shape)
+            exit()
+
+            
+
+        for batch_X, batch_Y, batch_Z in generatorT:
+
+            print("#"*6, idx_eM, "MRI Phase:")
+            print(np.mean(batch_X))
+            print(np.mean(batch_Y))
+            print(np.mean(batch_Z))
+
+            # Open a GradientTape.
+            with tensorflow.GradientTape() as tape:
+                # Forward pass.
+                predictions = model([batch_X, batch_Z, 
+                                     np.ones((1, )), np.zeros((1, ))])
+                # Compute the loss value for this batch.
+                loss_value = loss_fn(batch_Y, predictions)
+                loss_idx_mri = idx_epochs*train_para["epoch_per_MRI"]+idx_eM
+                # print(loss_idx_mri)
+                loss_mri[loss_idx_mri] = np.mean(loss_value)
+                print("Phase MRI loss: ", np.mean(loss_value))
+
+            # Get gradients of loss wrt the *trainable* weights.
+            gradients = tape.gradient(loss_value, model.trainable_weights)
+            # Update the weights of the model.
+            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            if idx_eM >= train_para["epoch_per_MRI"]:
+                break
+            else:
+                idx_eM += 1
+
+        # train PET
+        idx_eP = 1
+        model = freeze_phase(model, phase="PET")
+        model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
+
+        # Iterate over the batches of a dataset.
+        for batch_X, batch_Y, batch_Z in generatorT:
+
+            print("@"*6, idx_eP, "PET Phase:")
+            print(np.mean(batch_X))
+            print(np.mean(batch_Y))
+            print(np.mean(batch_Z))
+
+            # Open a GradientTape.
+            with tensorflow.GradientTape() as tape:
+                # Forward pass.
+                predictions = model([batch_X, batch_Z,
+                                     np.zeros((1, )), np.ones((1, ))])
+                # Compute the loss value for this batch.
+                gt_Z = np.expand_dims(batch_Z[:, :, :, train_para["channel_Z"]//2], axis=3)
+                loss_value = loss_fn(gt_Z, predictions)
+                loss_idx_pet = idx_epochs*train_para["epoch_per_MRI"]+idx_eP
+                # print(loss_idx_pet)
+                loss_pet[loss_idx_pet] = np.mean(loss_value)
+                print("Phase PET loss: ", np.mean(loss_value))
+
+            
+            # Get gradients of loss wrt the *trainable* weights.
+            gradients = tape.gradient(loss_value, model.trainable_weights)
+            # Update the weights of the model.
+            optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            if idx_eP >= train_para["epoch_per_PET"]:
+                break
+            else:
+                idx_eP += 1
+
+        if idx_epochs % train_para["save_per_epochs"] == 0:
+            model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+            model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
+            np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_mri.npy", loss_mri)
+            np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_pet.npy", loss_pet)
+            print("Checkpoints saved for epochs ", idx_epochs+1)
+        if idx_epochs % train_para["eval_per_epochs"] == 0:
+            print("Save eval images.")
+            progress_eval(generator=generatorV, model=model, loss_fn=loss_fn,
+                          epochs=idx_epochs+1, img_num = train_para["eval_num_img"],
+                          save_name = train_para["jpgprogressfile_name"])
+        if idx_epochs >= train_para["steps_per_epoch"] * train_para["num_epochs"] + 1:
+            break
+
+    model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
+    model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
     os.system("mkdir "+train_para["para_name"])
     os.system("mv *"+train_para["para_name"]+"*.jpg "+train_para["para_name"])
     os.system("mv "+train_para["para_name"]+" ./jpeg/")
@@ -186,7 +239,7 @@ def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_r
                 cnt_v += 1
                 list_v.append([data_folder+pair_name_X, data_folder+pair_name_Y])
             else:
-                print("error")
+                print("Error in dataset division.")
 
     return list_t, list_v
      
