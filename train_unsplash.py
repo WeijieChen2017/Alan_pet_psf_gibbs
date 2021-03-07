@@ -51,13 +51,12 @@ def train():
 
     print(train_para)
 
-    sub_folder_list = split_dataset_simple(data_prefix_X=train_para["data_prefix_X"],
-                                           data_prefix_Y=train_para["data_prefix_Y"],
-                                           data_folder="./data_train/"+train_para["data_folder"]+"/", 
-                                           validation_ratio=train_para["validation_split"])
-    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
-    print("Training:", train_folderX, train_folderY)
-    print("Validation:", valid_folderX, valid_folderY)
+    list_t, list_v = split_dataset_simple(data_prefix_X=train_para["data_prefix_X"],
+                                          data_prefix_Y=train_para["data_prefix_Y"],
+                                          data_folder="./data_train/"+train_para["data_folder"]+"/", 
+                                          validation_ratio=train_para["validation_split"])
+    print("Training:", list_t)
+    print("Validation:", list_v)
     exit()
 
     np.random.seed(813)
@@ -168,17 +167,28 @@ def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_r
 
     dataX_list = glob.glob(data_folder+data_prefix_X+"*.npy")
     dataY_list = glob.glob(data_folder+data_prefix_Y+"*.npy")
-    dataX_list.sort()
-    dataY_list.sort()
-    for pair_path in dataX_list:
-        pair_name_X = os.path.basename(pair_path)
-        pair_name_Y = pair_name_X.replace("X", "Y")
+    cnt_t = 0
+    cnt_v = 0
+    cnt_v_max = int(len(dataX_list)*validation)
+    cnt_t_max = len(dataX_list) - cnt_v_max
+    list_t = []
+    list_v = []
+    for pair_path_X in dataX_list:
+        pair_name_X = os.path.basename(pair_path_X)
+        pair_name_Y_replaced = pair_name_X.replace("X", "Y")
         print(pair_name_X, pair_name_Y)
 
+        if cnt_t < cnt_t_max:
+            cnt_t += 1
+            list_t.append([data_folder+pair_name_X, data_folder+pair_name_Y])
+        else:
+            if cnt_v < cnt_v_max:
+                cnt_v += 1
+                list_v.append([data_folder+pair_name_X, data_folder+pair_name_Y])
+            else:
+                print("error")
 
-
-    sub_folder_list = [train_folderX, train_folderY, valid_folderX, valid_folderY]
-    return sub_folder_list
+    return list_t, list_v
      
 
 
