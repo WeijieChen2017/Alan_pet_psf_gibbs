@@ -5,7 +5,7 @@ import numpy as np
 dataX_list = glob.glob("../data_train/unsplash/imgX_*.npy")
 dataX_list.sort()
 for pair_path_X in dataX_list:
-    pair_path_Y = pair_name_X.replace("X", "Y")
+    pair_path_Y = pair_path_X.replace("X", "Y")
     print(pair_path_X, pair_path_Y)
 
     data_X = np.load(pair_path_X)
