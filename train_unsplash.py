@@ -24,7 +24,7 @@ train_para ={
     "img_cols" : 512, # image is resampled to this size
     "channel_X" : 1,
     "channel_Y" : 1,
-    "start_ch" : 16,
+    "start_ch" : 8,
     "depth" : 4, 
     "validation_split" : 0.2,
     "loss" : "l2",
