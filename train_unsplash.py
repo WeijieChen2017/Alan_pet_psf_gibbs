@@ -73,8 +73,7 @@ def train():
                                  out_ch=train_para["channel_Y"],
                                  start_ch=train_para["start_ch"],
                                  depth=train_para["depth"])
-    model.compile(optimizer=Adam(lr=1e-4),
-                  loss=loss,
+    model.compile(optimizer=Adam(lr=1e-4), loss=loss_fn,
                   metrics=[mean_squared_error,mean_absolute_error])
     model.summary()
 
@@ -100,11 +99,6 @@ def train():
     print('-'*50)
     print('Fitting network...')
     print('-'*50)
-
-    optimizer = Adam(lr=1e-4)
-    # loss_t = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
-    # loss_v = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
-    model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
     for idx_s in range(train_para["steps_per_epoch"]):
         print("Steps: ", idx_s+1)
