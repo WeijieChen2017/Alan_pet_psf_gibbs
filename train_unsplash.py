@@ -131,8 +131,8 @@ def train():
                 batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
                 n_iter = data_X.shape[2] // len_batch
                 for idx_batch in range(n_iter):
-                    batch_X[:, :, :, :] = data_X[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch].reshape(batch_X.size, order="F")
-                    batch_Y[:, :, :, :] = data_Y[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch].reshape(batch_Y.size, order="F")
+                    batch_X[:, :, :, :] = data_X[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch]
+                    batch_Y[:, :, :, :] = data_Y[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch]
                     print(batch_X.shape, batch_Y.shape)
                     
 
