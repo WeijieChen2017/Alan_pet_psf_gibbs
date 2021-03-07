@@ -35,7 +35,7 @@ train_para ={
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
     "batch_size" : 40, # should be smallish. 1-10
-    "num_epochs" : 10, # should train for at least 100-200 in total
+    "num_epochs" : 1, # should train for at least 100-200 in total
     "steps_per_epoch" : 10, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
     "load_weights" : False, # load trained weights for resuming training
@@ -132,8 +132,9 @@ def train():
             else:
                 model.evaluate(x=data_X, y=data_Y, batch_size=train_para["batch_size"])
 
-                batch_X[:, :, :, :] = data_X[:train_para["batch_size"], :, :, :]
-                batch_Y[:, :, :, :] = data_Y[:train_para["batch_size"], :, :, :]
+                batch_X = data_X[:train_para["batch_size"], :, :, :]
+                batch_Y = data_Y[:train_para["batch_size"], :, :, :]
+                predictions = model.predict(batch_X)
 
                 for idx_b in range(train_para["batch_size"]):
                     plt.figure(figsize=(20, 6), dpi=300)
@@ -291,13 +292,14 @@ def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_r
         pair_name_Y = pair_name_X.replace("X", "Y")
         print(pair_name_X, pair_name_Y)
 
+        # exchange X and Y
         if cnt_t < cnt_t_max:
             cnt_t += 1
-            list_t.append([data_folder+pair_name_X, data_folder+pair_name_Y])
+            list_t.append([data_folder+pair_name_Y, data_folder+pair_name_X])
         else:
             if cnt_v < cnt_v_max:
                 cnt_v += 1
-                list_v.append([data_folder+pair_name_X, data_folder+pair_name_Y])
+                list_v.append([data_folder+pair_name_Y, data_folder+pair_name_X])
             else:
                 print("Error in dataset division.")
 
