@@ -158,7 +158,7 @@ def train():
             print('-'*20)
             print("--Validation:")
             step_loss = 0
-            for data_pair in list_v:
+            for idx_p, data_pair in enumerate(list_v):
                 path_X = data_pair[0]
                 path_Y = data_pair[1]
 
@@ -181,24 +181,24 @@ def train():
 
                 step_loss += batch_loss / n_iter
 
-                for idx in range(len_batch):
+                for idx_b in range(len_batch):
                     plt.figure(figsize=(20, 6), dpi=300)
                     plt.subplot(2, 3, 1)
-                    plt.imshow(np.rot90(np.squeeze(batch_X[idx, :, :, :])),cmap='gray')
+                    plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
                     plt.axis('off')
                     plt.title('input X[0]')
 
                     plt.subplot(2, 3, 2)
-                    plt.imshow(np.rot90(np.squeeze(batch_Y[idx, :, :, :])),cmap='gray')
+                    plt.imshow(np.rot90(np.squeeze(batch_Y[idx_b, :, :, :])),cmap='gray')
                     plt.axis('off')
                     plt.title('target Y[0]')
 
                     plt.subplot(2, 3, 3)
-                    plt.imshow(np.rot90(np.squeeze(predictions[idx, :, :, :])),cmap='gray')
+                    plt.imshow(np.rot90(np.squeeze(predictions[idx_b, :, :, :])),cmap='gray')
                     plt.axis('off')
                     plt.title('pred')
 
-                    plt.savefig('U_e{1:02d}_s{1:02d}_b{1:02d}.jpg'.format(epoch+1, idx_steps+1, idx+1))
+                    plt.savefig('U_e{1:02d}_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(epoch+1, idx_steps+1, idx_p+1, idx_b+1))
             
             loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
 
@@ -207,7 +207,7 @@ def train():
         np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
         np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
         print("Checkpoints saved for epochs ", idx_epochs+1)
-        
+
     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
 
