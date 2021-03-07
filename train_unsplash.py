@@ -202,14 +202,12 @@ def train():
             
             loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
 
-
         model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
         model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
         np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
         np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
         print("Checkpoints saved for epochs ", idx_epochs+1)
-        if idx_epochs % train_para["eval_per_epochs"] == 0:        
-
+        
     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
 
