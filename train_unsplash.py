@@ -51,6 +51,15 @@ def train():
 
     print(train_para)
 
+    sub_folder_list = split_dataset_simple(data_prefix_X=train_para["data_prefix_X"],
+                                           data_prefix_Y=train_para["data_prefix_Y"],
+                                           data_folder="./data_train/"+train_para["data_folder"]+"/", 
+                                           validation_ratio=train_para["validation_split"])
+    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
+    print("Training:", train_folderX, train_folderY)
+    print("Validation:", valid_folderX, valid_folderY)
+    exit()
+
     np.random.seed(813)
     if train_para["loss"] == "l1":
         loss = mean_absolute_error
@@ -123,13 +132,7 @@ def train():
     #     dataX, dataY = test_data
     #     print(dataX.shape, dataY.shape)
 
-    sub_folder_list = split_dataset_simple(data_prefix_X=train_para["data_prefix_X"],
-                                           data_prefix_Y=train_para["data_prefix_Y"],
-                                           data_folder="./data_train/"+train_para["data_folder"], 
-                                           validation_ratio=train_para["validation_split"])
-    [train_folderX, train_folderY, valid_folderX, valid_folderY] = sub_folder_list
-    print("Training:", train_folderX, train_folderY)
-    print("Validation:", valid_folderX, valid_folderY)
+    
 
     print('-'*50)
     print('Preparing callbacks...')
