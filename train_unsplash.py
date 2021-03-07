@@ -107,67 +107,6 @@ def train():
     n_train = len(list_t)
     model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-
-    Model.fit(
-    x=None,
-    y=None,
-    batch_size=None,
-    epochs=1,
-    verbose=1,
-    callbacks=None,
-    validation_split=0.0,
-    validation_data=None,
-    shuffle=True,
-    class_weight=None,
-    sample_weight=None,
-    initial_epoch=0,
-    steps_per_epoch=None,
-    validation_steps=None,
-    validation_batch_size=None,
-    validation_freq=1,
-    max_queue_size=10,
-    workers=1,
-    use_multiprocessing=False,
-)
-
-    for idx_epochs in range(train_para["num_epochs"]):
-
-        print('-'*50)
-        print("Epochs: ", idx_epochs+1)
-        print('-'*20)
-        random.shuffle(list_t)
-        for idx_steps in range(train_para["steps_per_epoch"]):
-            print("Steps: ", idx_steps+1)
-            print('-'*20)
-            print("--Training:")
-            step_loss = 0
-            for data_pair in list_t:
-                path_X = data_pair[0]
-                path_Y = data_pair[1]
-
-                data_X = np.load(path_X)
-                data_Y = np.load(path_Y)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     for idx_e in range(train_para["num_epochs"]):
 
         print('-'*50)
