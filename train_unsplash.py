@@ -125,8 +125,17 @@ def train():
                 data_X = np.load(path_X)
                 data_Y = np.load(path_Y)
 
-                print(data_X.shape)
-                print(data_Y.shape)
+                # 512, 512, 1000
+                len_batch = train_para["batch_size"]
+                batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
+                batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
+                n_iter = data_X.shape[2] // len_batch
+                for idx_batch in range(n_iter):
+                    batch_X[:, :, :, :] = data_X[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch-1]
+                    batch_Y[:, :, :, :] = data_Y[:, :, idx_batch*len_batch:(idx_batch+1)*len_batch-1]
+                    print(batch_X.shape, batch_Y.shape)
+                    
+
             exit()
 
             
