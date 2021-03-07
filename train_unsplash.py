@@ -169,7 +169,7 @@ def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_r
     dataY_list = glob.glob(data_folder+data_prefix_Y+"*.npy")
     cnt_t = 0
     cnt_v = 0
-    cnt_v_max = int(len(dataX_list)*validation)
+    cnt_v_max = int(len(dataX_list)*validation_ratio)
     cnt_t_max = len(dataX_list) - cnt_v_max
     list_t = []
     list_v = []
