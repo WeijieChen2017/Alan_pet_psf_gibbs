@@ -45,8 +45,8 @@ imgY_25k = np.zeros((512, 512, 1000), dtype=np.single)
 cnt = 0
 cnt_k = 25
 
-for ii in range(1000):
-    idx = ii + 24000
+for ii in range(10000):
+    idx = ii
     img_name = str(idx).zfill(5)
     # 3 channels are the same
     try:
@@ -69,7 +69,7 @@ for ii in range(1000):
             print(cnt_k*1000)
             cnt_k += 1
 
-if cnt <999:
+if cnt <=999:
     np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
     np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
     cnt = 0
