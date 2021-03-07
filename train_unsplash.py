@@ -108,7 +108,7 @@ def train():
     n_train = len(list_t)
     model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
 
-    for idx_epochs in range(train_para["num_epochs"])
+    for idx_epochs in range(train_para["num_epochs"]):
 
         print('-'*50)
         print("Epochs: ", idx_epochs+1)
