@@ -143,8 +143,7 @@ def train():
                         loss_value = loss_fn(batch_Y, predictions)
                         batch_loss += loss_value
                         # print(loss_idx_mri)
-                        loss_mri[loss_idx_mri] = np.mean(loss_value)
-                        print("Phase MRI loss: ", np.mean(loss_value))
+                        print("Training loss: ", np.mean(loss_value))
 
                     # Get gradients of loss wrt the *trainable* weights.
                     gradients = tape.gradient(loss_value, model.trainable_weights)
