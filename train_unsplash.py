@@ -86,16 +86,16 @@ def train():
     if train_para["load_weights"]:
         model.load_weights(train_para["save_folder"]+train_para["weightfile_name"])  
 
-    print('-'*50)
-    print('Preparing callbacks...')
-    print('-'*50)
-    history = History()
-    model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
-                                       monitor='val_loss', 
-                                       save_best_only=True)
-    tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
-    display_progress = LambdaCallback(on_epoch_end= lambda epoch,
-                                      logs: progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV) )
+    # print('-'*50)
+    # print('Preparing callbacks...')
+    # print('-'*50)
+    # history = History()
+    # model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
+    #                                    monitor='val_loss', 
+    #                                    save_best_only=True)
+    # tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
+    # display_progress = LambdaCallback(on_epoch_end= lambda epoch,
+    #                                   logs: progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV) )
 
     print('-'*50)
     print('Fitting network...')
