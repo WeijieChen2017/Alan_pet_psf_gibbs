@@ -175,7 +175,7 @@ def split_dataset_simple(data_prefix_X, data_prefix_Y, data_folder, validation_r
     list_v = []
     for pair_path_X in dataX_list:
         pair_name_X = os.path.basename(pair_path_X)
-        pair_name_Y_replaced = pair_name_X.replace("X", "Y")
+        pair_name_Y = pair_name_X.replace("X", "Y")
         print(pair_name_X, pair_name_Y)
 
         if cnt_t < cnt_t_max:
