@@ -109,10 +109,13 @@ def train():
             path_X = data_pair[0]
             path_Y = data_pair[1]
 
-            data_X = np.load(path_X)
-            data_Y = np.load(path_Y)
-
-            model.fit(x=data_X, y=data_Y, batch_size=train_para["batch_size"], epochs=train_para["num_epochs"], callbacks=[model_checkpoint])
+            try:
+                data_X = np.load(path_X)
+                data_Y = np.load(path_Y)
+            except:
+                print(path_X, path_Y)
+            else:
+                model.fit(x=data_X, y=data_Y, batch_size=train_para["batch_size"], epochs=train_para["num_epochs"], callbacks=[model_checkpoint])
             
         print('-'*20)
         print("--Validation:")
