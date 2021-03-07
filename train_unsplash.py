@@ -90,10 +90,10 @@ def train():
     # print('Preparing callbacks...')
     # print('-'*50)
     # history = History()
-    # model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
-    #                                    monitor='val_loss', 
-    #                                    save_best_only=True)
-    # tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
+    model_checkpoint = ModelCheckpoint(train_para["save_folder"]+train_para["weightfile_name"],
+                                       monitor='val_loss', 
+                                       save_best_only=True)
+    tensorboard = TensorBoard(log_dir=os.path.join('tblogs','{}'.format(time())))
     # display_progress = LambdaCallback(on_epoch_end= lambda epoch,
     #                                   logs: progresscallback_img2img_multiple(epoch, logs, model, history, fig, generatorV) )
 
@@ -106,6 +106,29 @@ def train():
     loss_v = np.zeros((train_para["steps_per_epoch"]*train_para["num_epochs"]))
     n_train = len(list_t)
     model.compile(optimizer=optimizer,loss=loss_fn, metrics=[mean_squared_error,mean_absolute_error])
+
+
+    Model.fit(
+    x=None,
+    y=None,
+    batch_size=None,
+    epochs=1,
+    verbose=1,
+    callbacks=None,
+    validation_split=0.0,
+    validation_data=None,
+    shuffle=True,
+    class_weight=None,
+    sample_weight=None,
+    initial_epoch=0,
+    steps_per_epoch=None,
+    validation_steps=None,
+    validation_batch_size=None,
+    validation_freq=1,
+    max_queue_size=10,
+    workers=1,
+    use_multiprocessing=False,
+)
 
     for idx_epochs in range(train_para["num_epochs"]):
 
@@ -125,38 +148,79 @@ def train():
                 data_X = np.load(path_X)
                 data_Y = np.load(path_Y)
 
-                # 512, 512, 1000
-                len_batch = train_para["batch_size"]
-                batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
-                batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
-                n_iter = data_X.shape[2] // len_batch
-                batch_loss = 0
-                for idx_batch in range(n_iter):
-                    batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
-                    batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
 
-                    # Open a GradientTape.
-                    with tensorflow.GradientTape() as tape:
-                        # Forward pass.
-                        predictions = model([batch_X])
-                        # Compute the loss value for this batch.
-                        loss_value = loss_fn(batch_Y, predictions)
-                        batch_loss += loss_value
-                        # print(loss_idx_mri)
-                        print("Training loss: ", np.mean(loss_value))
 
-                    # Get gradients of loss wrt the *trainable* weights.
-                    gradients = tape.gradient(loss_value, model.trainable_weights)
-                    # Update the weights of the model.
-                    optimizer.apply_gradients(zip(gradients, model.trainable_weights))
-                step_loss += batch_loss / n_iter
-                print("----", os.path.basename(path_X), step_loss)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    for idx_e in range(train_para["num_epochs"]):
+
+        print('-'*50)
+        print("Epochs: ", idx_e+1)
+        print('-'*20)
+        random.shuffle(list_t)
+        for idx_s in range(train_para["steps_per_epoch"]):
+            print("Steps: ", idx_s+1)
+            print('-'*20)
+            print("--Training:")
+
+            for data_pair in list_t:
+                path_X = data_pair[0]
+                path_Y = data_pair[1]
+
+                data_X = np.load(path_X)
+                data_Y = np.load(path_Y)
+
+                history = model.fit(x=data_X, y=data_Y, batch_size=train_para["batch_size"], epochs=10)
+                print(history)
+                # len_batch = train_para["batch_size"]
+                # batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
+                # batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
+
+
+            #     n_iter = data_X.shape[2] // len_batch
+            #     batch_loss = 0
+            #     for idx_batch in range(n_iter):
+            #         batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+            #         batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+
+            #         # Open a GradientTape.
+            #         with tensorflow.GradientTape() as tape:
+            #             # Forward pass.
+            #             predictions = model([batch_X])
+            #             # Compute the loss value for this batch.
+            #             loss_value = loss_fn(batch_Y, predictions)
+            #             batch_loss += loss_value
+            #             # print(loss_idx_mri)
+            #             # print("Training loss: ", np.mean(loss_value))
+
+            #         # Get gradients of loss wrt the *trainable* weights.
+            #         gradients = tape.gradient(loss_value, model.trainable_weights)
+            #         # Update the weights of the model.
+            #         optimizer.apply_gradients(zip(gradients, model.trainable_weights))
+            #     step_loss += batch_loss / n_iter
+            #     print("----", os.path.basename(path_X), step_loss)
                 
-            loss_t[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
+            # loss_t[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
             
             print('-'*20)
             print("--Validation:")
-            step_loss = 0
+
             for idx_p, data_pair in enumerate(list_v):
                 path_X = data_pair[0]
                 path_Y = data_pair[1]
@@ -164,21 +228,26 @@ def train():
                 data_X = np.load(path_X)
                 data_Y = np.load(path_Y)
 
-                # 512, 512, 1000
+                loss = model.evaluate(x=data_X, y=data_Y, batch_size=train_para["batch_size"])
+                print(loss)
+                # # 512, 512, 1000
                 len_batch = train_para["batch_size"]
-                batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
-                batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
-                n_iter = data_X.shape[2] // len_batch
-                batch_loss = 0
-                for idx_batch in range(n_iter):
-                    batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
-                    batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+                # batch_X = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_X"]))
+                # batch_Y = np.zeros((len_batch, train_para["img_rows"], train_para["img_cols"], train_para["channel_Y"]))
+                # n_iter = data_X.shape[2] // len_batch
+                # batch_loss = 0
+                # for idx_batch in range(n_iter):
+                #     batch_X[:, :, :, :] = data_X[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
+                #     batch_Y[:, :, :, :] = data_Y[idx_batch*len_batch:(idx_batch+1)*len_batch, :, :, :]
 
-                    predictions = model.predict(batch_X)
-                    loss_value = loss_fn(batch_Y, predictions)
-                    batch_loss += loss_value
+                #     predictions = model.predict(batch_X)
+                #     loss_value = loss_fn(batch_Y, predictions)
+                #     batch_loss += loss_value
 
-                step_loss += batch_loss / n_iter
+                # step_loss += batch_loss / n_iter
+
+                batch_X[:, :, :, :] = data_X[:len_batch, :, :, :]
+                batch_Y[:, :, :, :] = data_Y[:len_batch, :, :, :]
 
                 for idx_b in range(len_batch):
                     plt.figure(figsize=(20, 6), dpi=300)
@@ -197,15 +266,15 @@ def train():
                     plt.axis('off')
                     plt.title('pred')
 
-                    plt.savefig('U_e{1:02d}_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(epoch+1, idx_steps+1, idx_p+1, idx_b+1))
+                    plt.savefig('U_e{1:02d}_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(idx_e+1, idx_s+1, idx_p+1, idx_b+1))
             
-            loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] += step_loss / n_train
+            # loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] = loss
 
         model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
         model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
-        np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
-        np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
-        print("Checkpoints saved for epochs ", idx_epochs+1)
+        # np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_t.npy", loss_t)
+        # np.save(train_para["save_folder"]+train_para["weightfile_name"][:-3]+"_loss_v.npy", loss_v)
+        # print("Checkpoints saved for epochs ", idx_epochs+1)
 
     model.save_weights(train_para["save_folder"]+train_para["weightfile_name"], save_format="h5")
     model.save(train_para["save_folder"]+train_para["weightfile_name"][:-3])
