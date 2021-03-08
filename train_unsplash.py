@@ -34,7 +34,7 @@ train_para ={
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
-    "batch_size" : 8, # should be smallish. 1-10
+    "batch_size" : 1, # should be smallish. 1-10
     "num_epochs" : 4, # should train for at least 100-200 in total
     "steps_per_epoch" : 8, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
