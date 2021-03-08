@@ -137,7 +137,7 @@ def train():
                 predictions = model.predict(batch_X)
 
                 for idx_b in range(train_para["batch_size"]):
-                    plt.figure(figsize=(20, 6), dpi=300)
+                    plt.figure(figsize=(12, 4), dpi=300)
                     plt.subplot(2, 3, 1)
                     plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
                     plt.axis('off')
@@ -153,7 +153,7 @@ def train():
                     plt.axis('off')
                     plt.title('pred')
 
-                    plt.savefig('U_s{1:02d}_p{1:02d}_b{1:02d}.jpg'.format(idx_s+1, idx_p+1, idx_b+1))
+                    plt.savefig('U_s{0:02d}_p{1:02d}_b{2:02d}.jpg'.format(idx_s+1, idx_p+1, idx_b+1))
                     plt.close('all')
             
             # loss_v[idx_epochs*train_para["steps_per_epoch"]+idx_steps] = loss

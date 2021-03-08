@@ -17,7 +17,7 @@ for pair_path_X in dataX_list:
     
     for idx in range(n_samples):
         norm_X[idx, :, :, :] = np.expand_dims(data_X[:, :, idx], axis=-1)
-        norm_Y[idx, :, :, :] = np.expand_dims(data_X[:, :, idx], axis=-1)
+        norm_Y[idx, :, :, :] = np.expand_dims(data_Y[:, :, idx], axis=-1)
 
     norm_X = (norm_X-np.amin(norm_X))/np.amax(norm_X)
     norm_Y = (norm_Y-np.amin(norm_Y))/np.amax(norm_Y)

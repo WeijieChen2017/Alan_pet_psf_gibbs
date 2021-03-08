@@ -39,13 +39,13 @@ def k4conv(data, k):
         img_Y[idx:-idx, idx:-idx] = img_conv[idx:-idx, idx:-idx, k-i-1]
     return img_Y
 
-
-imgX_25k = np.zeros((512, 512, 1000), dtype=np.single)
-imgY_25k = np.zeros((512, 512, 1000), dtype=np.single)
+n_slice = 1000
+imgX_25k = np.zeros((n_slice, 512, 512, 1), dtype=np.single)
+imgY_25k = np.zeros((n_slice, 512, 512, 1), dtype=np.single)
 cnt = 0
-cnt_k = 25
+cnt_k = 1
 
-for ii in range(10000):
+for ii in range(5000):
     idx = ii
     img_name = str(idx).zfill(5)
     # 3 channels are the same
@@ -58,20 +58,24 @@ for ii in range(10000):
         # np.save(img_name+"_X.npy", img_X)
         # np.save(img_name+"_Y.npy", img_Y)
         # print(str(idx).zfill(5)+".jpg")
-        imgX_25k[:, :, cnt] = img_X
-        imgY_25k[:, :, cnt] = img_Y
+        imgX_25k[cnt, :, :, 0] = img_X
+        imgY_25k[cnt, :, :, 0] = img_Y
         cnt += 1
 
-        if cnt >=1000:
+        if cnt >=n_slice:
+
+            imgX_25k = (imgX_25k - np.amin(imgX_25k)) / (np.amax(imgX_25k) - np.amin(imgX_25k))
+            imgY_25k = (imgY_25k - np.amin(imgY_25k)) / (np.amax(imgY_25k) - np.amin(imgY_25k))
+            print(np.std(imgX_25k), np.std(imgY_25k))
             np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
             np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
             cnt = 0
-            print(cnt_k*1000)
+            print(cnt_k*n_slice)
             cnt_k += 1
 
-if cnt <=999:
-    np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
-    np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
-    cnt = 0
-    print(cnt_k*1000)
-    cnt_k += 1
+imgX_25k = (imgX_25k - np.amin(imgX_25k)) / (np.amax(imgX_25k) - np.amin(imgX_25k))
+imgY_25k = (imgY_25k - np.amin(imgY_25k)) / (np.amax(imgY_25k) - np.amin(imgY_25k))
+print(np.std(imgX_25k), np.std(imgY_25k))
+np.save("imgX_"+str(cnt_k)+"k.npy", imgX_25k)
+np.save("imgY_"+str(cnt_k)+"k.npy", imgY_25k)
+print(cnt_k*n_slice)
