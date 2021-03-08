@@ -24,7 +24,7 @@ train_para ={
     "img_cols" : 512, # image is resampled to this size
     "channel_X" : 1,
     "channel_Y" : 1,
-    "start_ch" : 8,
+    "start_ch" : 64,
     "depth" : 4, 
     "validation_split" : 0.2,
     "loss" : "l2",
@@ -34,9 +34,9 @@ train_para ={
     "weightfile_name" : 'weights_'+para_name+'.h5',
     "model_name" : 'model_'+para_name+'.json',
     "save_folder" : './achives/',
-    "batch_size" : 40, # should be smallish. 1-10
-    "num_epochs" : 1, # should train for at least 100-200 in total
-    "steps_per_epoch" : 10, # should be enough to be equal to one whole pass through the dataset
+    "batch_size" : 32, # should be smallish. 1-10
+    "num_epochs" : 4, # should train for at least 100-200 in total
+    "steps_per_epoch" : 8, # should be enough to be equal to one whole pass through the dataset
     "initial_epoch" : 0, # for resuming training
     "load_weights" : False, # load trained weights for resuming training
 }  
@@ -137,7 +137,7 @@ def train():
                 predictions = model.predict(batch_X)
 
                 for idx_b in range(train_para["batch_size"]):
-                    plt.figure(figsize=(12, 4), dpi=300)
+                    plt.figure(figsize=(8, 4), dpi=300)
                     plt.subplot(2, 3, 1)
                     plt.imshow(np.rot90(np.squeeze(batch_X[idx_b, :, :, :])),cmap='gray')
                     plt.axis('off')
