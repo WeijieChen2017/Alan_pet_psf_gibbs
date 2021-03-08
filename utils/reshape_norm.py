@@ -21,6 +21,7 @@ for pair_path_X in dataX_list:
 
     norm_X = (norm_X-np.amin(norm_X))/np.amax(norm_X)
     norm_Y = (norm_Y-np.amin(norm_Y))/np.amax(norm_Y)
+    print(np.std(norm_X), np.std(norm_Y))
 
     name_X = "../data_train/unsplash/norm_" + os.path.basename(pair_path_X)
     name_Y = "../data_train/unsplash/norm_" + os.path.basename(pair_path_Y)
